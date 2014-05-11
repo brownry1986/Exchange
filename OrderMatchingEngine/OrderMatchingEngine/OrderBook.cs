@@ -9,28 +9,14 @@ namespace OrderMatchingEngine
 {
     public class OrderBook
     {
-        private Int64 productId;
-
         private Dictionary<Int64, Order> allOrders = new Dictionary<Int64, Order>();
 
         private Dictionary<Int64, List<Order>> ordersByTrader = new Dictionary<Int64, List<Order>>();
         
-        private LinkedList<Order> buyQueue = new LinkedList<Order>();
-
-        private LinkedList<Order> sellQueue = new LinkedList<Order>();
-
-        public OrderBook( Int64 productId )
-        {
-            this.productId = productId;
-            this.buyQueue = new LinkedList<Order>();
-            this.sellQueue = new LinkedList<Order>();
-        }
-
         public void addOrder(Order order)
         {
             order.orderNumber = OrderNumberGenerator.getNext();
             order.submitTime = DateTime.Now;
-            (order.buySell == BuySell.Buy ? buyQueue : sellQueue).AddLast(order);
 
             allOrders.Add(order.orderNumber, order);
 
