@@ -9,9 +9,15 @@ namespace ClassLibrary
     [Serializable]
     public class Product
     {
-        public virtual long productId { get; set; }
+        public Product(Int64 productId, String name) 
+        {
+            this.productId = productId;
+            this.name = name;
+        }
 
-        public virtual String productName { get; set; }
+        public Int64 productId { get; set; }
+
+        public String name { get; set; }
 
     }
 }
