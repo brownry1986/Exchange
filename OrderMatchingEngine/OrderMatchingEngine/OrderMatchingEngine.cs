@@ -25,27 +25,7 @@ namespace OrderMatchingEngine
 
         static void Main(string[] args)
         {
-            if ( args.Length != 1 ) 
-            {
-                Console.WriteLine("Usasage: OrderMatching <product id>");
-                return;
-            }
-
-            List<Product> products= new List<Product>();
-            products.Add(new Product(0, "Midwest Agricultural"));
-            products.Add(new Product(1, "Midwest Industrial"));
-            products.Add(new Product(2, "Midwest Technical"));
-            products.Add(new Product(3, "Midwest Northeast Manufacturing"));
-            products.Add(new Product(4, "California Agricultural"));
-            products.Add(new Product(5, "California Technical"));
-
-            //orderQueues = new List<Queue<Order>>();
-
-            //MessageProcessor messageProcessor = new MessageProcessor(new ActionLibrary());
-            //Thread messageThread = new Thread(messageProcessor.Process);
-            //messageThread.Start();
-
-            foreach(Product product in products) 
+            foreach (Product product in ProductList.products) 
             {
                 BlockingCollection<Order> queue = new BlockingCollection<Order>();
                 orderQueues.Add(queue);
@@ -53,7 +33,7 @@ namespace OrderMatchingEngine
                 Thread matcherThread = new Thread(matcher.Match);
                 matcherThread.Start();
             }
-            //Queue<Order> orderQueue = new Queue<Order>();
+
             OrderMatchingEngine ome = new OrderMatchingEngine();
             orderBook = new OrderBook();
             ome.Start();

@@ -36,29 +36,30 @@ namespace ExchangeClient
         private void submitButton_Click(object sender, EventArgs e)
         {
 
-            String product = productValue.Text;
             Order order = new Order();
-            order.productId = Convert.ToInt64(productValue.Text);
+            //order.productId = Convert.ToInt64(productValue.Text);
+            order.productId = Convert.ToInt64(productBox.SelectedValue);
+            order.buySell = (BuySell) buySellBox.SelectedItem;
+
             order.quantity = Convert.ToInt64(quantityValue.Text);
             order.price = Convert.ToDecimal(priceValue.Text);
 
             ServiceLibrary.OrderService orderService = new ServiceLibrary.OrderService();
             Order submittedOrder = orderService.SubmitOrder(order);
             System.Console.WriteLine("Order Submission Successful: Order Number = " + submittedOrder.orderNumber);
-            orderService.CancelOrder(1234, submittedOrder.orderNumber);
-            System.Console.WriteLine("Order Cancellation Successful: Order Number = " + submittedOrder.orderNumber);
+            refreshOrders();
+            //orderService.CancelOrder(1234, submittedOrder.orderNumber);
+            //System.Console.WriteLine("Order Cancellation Successful: Order Number = " + submittedOrder.orderNumber);
         }
 
         private void refreshButton_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Refresh Button Clicked");
+            refreshOrders();
+        }
 
-            //ServiceLibrary.OrderService orderService = new ServiceLibrary.OrderService();
-            //List<Order> orders = orderService.GetOrders(0);
-
-            //OrderServiceReference.IOrderService service = new OrderServiceReference.OrderServiceClient();
-            //Order[] myOrders = service.GetOrders(0);
-
+        private void refreshOrders()
+        {
             OrderService.IOrderService service = new OrderService.OrderServiceClient();
             List<Order> orders = service.GetOrders(0);
 
@@ -68,6 +69,5 @@ namespace ExchangeClient
             }
             orderDataGridView1.DataSource = orders;
         }
-
     }
 }

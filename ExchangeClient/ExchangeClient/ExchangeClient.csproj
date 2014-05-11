@@ -82,7 +82,16 @@
     <EmbeddedResource Include="SubmitOrderForm.resx">
       <DependentUpon>SubmitOrderForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Properties\DataSources\ClassLibrary.Account.datasource" />
+    <None Include="Properties\DataSources\ClassLibrary.IAction.datasource" />
+    <None Include="Properties\DataSources\ClassLibrary.IActionLibrary.datasource" />
+    <None Include="Properties\DataSources\ClassLibrary.Message.datasource" />
+    <None Include="Properties\DataSources\ClassLibrary.Messenger.datasource" />
     <None Include="Properties\DataSources\ClassLibrary.Order.datasource" />
+    <None Include="Properties\DataSources\ClassLibrary.OrderNumberGenerator.datasource" />
+    <None Include="Properties\DataSources\ClassLibrary.ProcessMessageAsync.datasource" />
+    <None Include="Properties\DataSources\ClassLibrary.Product.datasource" />
+    <None Include="Properties\DataSources\ClassLibrary.ProductList.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

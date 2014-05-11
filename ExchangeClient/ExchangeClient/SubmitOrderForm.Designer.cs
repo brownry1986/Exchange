@@ -29,15 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.productLabel = new System.Windows.Forms.Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SubmitOrderForm));
             this.quantityLabel = new System.Windows.Forms.Label();
             this.priceLabel = new System.Windows.Forms.Label();
             this.submitButton = new System.Windows.Forms.Button();
-            this.productValue = new System.Windows.Forms.TextBox();
             this.quantityValue = new System.Windows.Forms.TextBox();
             this.priceValue = new System.Windows.Forms.TextBox();
             this.refreshButton = new System.Windows.Forms.Button();
-            this.orderBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.orderBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.orderDataGridView1 = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -50,24 +48,22 @@
             this.dataGridViewTextBoxColumn16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewCheckBoxColumn3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.dataGridViewCheckBoxColumn4 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource)).BeginInit();
+            this.buySell = new System.Windows.Forms.Label();
+            this.productBox = new System.Windows.Forms.ComboBox();
+            this.productListBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.product = new System.Windows.Forms.Label();
+            this.buySellBox = new System.Windows.Forms.ComboBox();
+            this.productBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.orderDataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productListBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productBindingSource)).BeginInit();
             this.SuspendLayout();
-            // 
-            // productLabel
-            // 
-            this.productLabel.AutoSize = true;
-            this.productLabel.Location = new System.Drawing.Point(11, 61);
-            this.productLabel.Name = "productLabel";
-            this.productLabel.Size = new System.Drawing.Size(44, 13);
-            this.productLabel.TabIndex = 0;
-            this.productLabel.Text = "Product";
             // 
             // quantityLabel
             // 
             this.quantityLabel.AutoSize = true;
-            this.quantityLabel.Location = new System.Drawing.Point(11, 102);
+            this.quantityLabel.Location = new System.Drawing.Point(11, 99);
             this.quantityLabel.Name = "quantityLabel";
             this.quantityLabel.Size = new System.Drawing.Size(46, 13);
             this.quantityLabel.TabIndex = 1;
@@ -76,7 +72,7 @@
             // priceLabel
             // 
             this.priceLabel.AutoSize = true;
-            this.priceLabel.Location = new System.Drawing.Point(11, 144);
+            this.priceLabel.Location = new System.Drawing.Point(11, 141);
             this.priceLabel.Name = "priceLabel";
             this.priceLabel.Size = new System.Drawing.Size(31, 13);
             this.priceLabel.TabIndex = 2;
@@ -84,7 +80,7 @@
             // 
             // submitButton
             // 
-            this.submitButton.Location = new System.Drawing.Point(14, 185);
+            this.submitButton.Location = new System.Drawing.Point(14, 182);
             this.submitButton.Name = "submitButton";
             this.submitButton.Size = new System.Drawing.Size(75, 23);
             this.submitButton.TabIndex = 3;
@@ -92,30 +88,23 @@
             this.submitButton.UseVisualStyleBackColor = true;
             this.submitButton.Click += new System.EventHandler(this.submitButton_Click);
             // 
-            // productValue
-            // 
-            this.productValue.Location = new System.Drawing.Point(62, 54);
-            this.productValue.Name = "productValue";
-            this.productValue.Size = new System.Drawing.Size(100, 20);
-            this.productValue.TabIndex = 4;
-            // 
             // quantityValue
             // 
-            this.quantityValue.Location = new System.Drawing.Point(62, 95);
+            this.quantityValue.Location = new System.Drawing.Point(62, 92);
             this.quantityValue.Name = "quantityValue";
             this.quantityValue.Size = new System.Drawing.Size(100, 20);
             this.quantityValue.TabIndex = 5;
             // 
             // priceValue
             // 
-            this.priceValue.Location = new System.Drawing.Point(62, 136);
+            this.priceValue.Location = new System.Drawing.Point(62, 133);
             this.priceValue.Name = "priceValue";
             this.priceValue.Size = new System.Drawing.Size(100, 20);
             this.priceValue.TabIndex = 6;
             // 
             // refreshButton
             // 
-            this.refreshButton.Location = new System.Drawing.Point(14, 472);
+            this.refreshButton.Location = new System.Drawing.Point(14, 469);
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.Size = new System.Drawing.Size(75, 23);
             this.refreshButton.TabIndex = 8;
@@ -143,7 +132,7 @@
             this.dataGridViewCheckBoxColumn3,
             this.dataGridViewCheckBoxColumn4});
             this.orderDataGridView1.DataSource = this.orderBindingSource1;
-            this.orderDataGridView1.Location = new System.Drawing.Point(14, 230);
+            this.orderDataGridView1.Location = new System.Drawing.Point(14, 227);
             this.orderDataGridView1.Name = "orderDataGridView1";
             this.orderDataGridView1.Size = new System.Drawing.Size(717, 220);
             this.orderDataGridView1.TabIndex = 10;
@@ -208,26 +197,73 @@
             this.dataGridViewCheckBoxColumn4.HeaderText = "matched";
             this.dataGridViewCheckBoxColumn4.Name = "dataGridViewCheckBoxColumn4";
             // 
+            // buySell
+            // 
+            this.buySell.AutoSize = true;
+            this.buySell.Location = new System.Drawing.Point(9, 61);
+            this.buySell.Name = "buySell";
+            this.buySell.Size = new System.Drawing.Size(47, 13);
+            this.buySell.TabIndex = 11;
+            this.buySell.Text = "Buy/Sell";
+            // 
+            // productBox
+            // 
+            this.productBox.DataSource = ClassLibrary.ProductList.products;
+            this.productBox.DisplayMember = "name";
+            this.productBox.FormattingEnabled = true;
+            this.productBox.Location = new System.Drawing.Point(62, 13);
+            this.productBox.Name = "productBox";
+            this.productBox.Size = new System.Drawing.Size(186, 21);
+            this.productBox.TabIndex = 12;
+            this.productBox.ValueMember = "productId";
+            // 
+            // product
+            // 
+            this.product.AutoSize = true;
+            this.product.Location = new System.Drawing.Point(9, 21);
+            this.product.Name = "product";
+            this.product.Size = new System.Drawing.Size(44, 13);
+            this.product.TabIndex = 13;
+            this.product.Text = "Product";
+            // 
+            // buySellBox
+            // 
+            //this.buySellBox.DataSource = new string[] {"Buy","Sell"};
+            this.buySellBox.DataSource = System.Enum.GetValues(typeof(ClassLibrary.BuySell)); 
+            this.buySellBox.FormattingEnabled = true;
+            //this.buySellBox.Items.AddRange(new object[] {"Buy","Sell"});
+            this.buySellBox.Location = new System.Drawing.Point(62, 53);
+            this.buySellBox.Name = "buySellBox";
+            this.buySellBox.Size = new System.Drawing.Size(121, 21);
+            this.buySellBox.TabIndex = 14;
+            // 
+            // productBindingSource
+            // 
+            this.productBindingSource.DataSource = typeof(ClassLibrary.Product);
+            // 
             // SubmitOrderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(783, 722);
+            this.ClientSize = new System.Drawing.Size(856, 863);
+            this.Controls.Add(this.buySellBox);
+            this.Controls.Add(this.product);
+            this.Controls.Add(this.productBox);
+            this.Controls.Add(this.buySell);
             this.Controls.Add(this.orderDataGridView1);
             this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.priceValue);
             this.Controls.Add(this.quantityValue);
-            this.Controls.Add(this.productValue);
             this.Controls.Add(this.submitButton);
             this.Controls.Add(this.priceLabel);
             this.Controls.Add(this.quantityLabel);
-            this.Controls.Add(this.productLabel);
             this.Name = "SubmitOrderForm";
             this.Text = "Submit Order";
             this.Load += new System.EventHandler(this.SubmitOrderForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.orderDataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productListBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -235,15 +271,12 @@
 
         #endregion
 
-        private System.Windows.Forms.Label productLabel;
         private System.Windows.Forms.Label quantityLabel;
         private System.Windows.Forms.Label priceLabel;
         private System.Windows.Forms.Button submitButton;
-        private System.Windows.Forms.TextBox productValue;
         private System.Windows.Forms.TextBox quantityValue;
         private System.Windows.Forms.TextBox priceValue;
         private System.Windows.Forms.Button refreshButton;
-        private System.Windows.Forms.BindingSource orderBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
@@ -266,6 +299,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn16;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn3;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn4;
+        private System.Windows.Forms.Label buySell;
+        private System.Windows.Forms.ComboBox productBox;
+        private System.Windows.Forms.BindingSource productListBindingSource;
+        private System.Windows.Forms.Label product;
+        private System.Windows.Forms.ComboBox buySellBox;
+        private System.Windows.Forms.BindingSource productBindingSource;
     }
 }
 
