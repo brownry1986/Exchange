@@ -37,10 +37,10 @@ namespace ExchangeClient
         {
 
             Order order = new Order();
-            //order.productId = Convert.ToInt64(productValue.Text);
+            order.traderId = Convert.ToInt64(traderBox.SelectedValue);
             order.productId = Convert.ToInt64(productBox.SelectedValue);
             order.buySell = (BuySell) buySellBox.SelectedItem;
-
+            order.orderType = (OrderType)orderTypeBox.SelectedItem;
             order.quantity = Convert.ToInt64(quantityValue.Text);
             order.price = Convert.ToDecimal(priceValue.Text);
 
@@ -60,14 +60,21 @@ namespace ExchangeClient
 
         private void refreshOrders()
         {
+            Int64 traderId = Convert.ToInt64(traderBox.SelectedValue);
             OrderService.IOrderService service = new OrderService.OrderServiceClient();
-            List<Order> orders = service.GetOrders(0);
+            List<Order> orders = service.GetOrders(traderId);
 
             foreach (Order order in orders)
             {
                 Console.WriteLine("Received Order: {0}", order.ToString());
             }
             orderDataGridView1.DataSource = orders;
+        }
+
+        private void traderBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            groupBox1.Visible = true;
+            //refreshOrders();
         }
     }
 }
