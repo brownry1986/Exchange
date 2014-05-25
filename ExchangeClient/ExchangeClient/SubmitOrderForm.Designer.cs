@@ -59,6 +59,7 @@
             this.orderType = new System.Windows.Forms.Label();
             this.trader = new System.Windows.Forms.Label();
             this.traderBox = new System.Windows.Forms.ComboBox();
+            //this.traderBox = new System.Web.UI.WebControls.DropDownList();
             ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.orderDataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productListBindingSource)).BeginInit();
@@ -269,7 +270,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
             this.groupBox1.Visible = false;
-
             // 
             // orderTypeBox
             // 

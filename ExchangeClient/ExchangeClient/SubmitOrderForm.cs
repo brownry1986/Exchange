@@ -74,6 +74,7 @@ namespace ExchangeClient
         private void traderBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             groupBox1.Visible = true;
+            traderBox.Enabled = false;
             //refreshOrders();
         }
     }

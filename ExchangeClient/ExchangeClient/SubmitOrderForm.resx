@@ -121,54 +121,6 @@
   <data name="orderBindingSource1.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>177, 17</value>
   </data>
-  <data name="productBox.Items" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAENDbGFzc0xpYnJhcnksIFZlcnNpb249MS4wLjAuMCwgQ3VsdHVy
-        ZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsBQEAAAAUQ2xhc3NMaWJyYXJ5LlByb2R1Y3QCAAAA
-        Gjxwcm9kdWN0SWQ+a19fQmFja2luZ0ZpZWxkFTxuYW1lPmtfX0JhY2tpbmdGaWVsZAABCQIAAAAAAAAA
-        AAAAAAYDAAAAFE1pZHdlc3QgQWdyaWN1bHR1cmFsCw==
-</value>
-  </data>
-  <data name="productBox.Items1" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAENDbGFzc0xpYnJhcnksIFZlcnNpb249MS4wLjAuMCwgQ3VsdHVy
-        ZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsBQEAAAAUQ2xhc3NMaWJyYXJ5LlByb2R1Y3QCAAAA
-        Gjxwcm9kdWN0SWQ+a19fQmFja2luZ0ZpZWxkFTxuYW1lPmtfX0JhY2tpbmdGaWVsZAABCQIAAAABAAAA
-        AAAAAAYDAAAAEk1pZHdlc3QgSW5kdXN0cmlhbAs=
-</value>
-  </data>
-  <data name="productBox.Items2" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAENDbGFzc0xpYnJhcnksIFZlcnNpb249MS4wLjAuMCwgQ3VsdHVy
-        ZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsBQEAAAAUQ2xhc3NMaWJyYXJ5LlByb2R1Y3QCAAAA
-        Gjxwcm9kdWN0SWQ+a19fQmFja2luZ0ZpZWxkFTxuYW1lPmtfX0JhY2tpbmdGaWVsZAABCQIAAAACAAAA
-        AAAAAAYDAAAAEU1pZHdlc3QgVGVjaG5pY2FsCw==
-</value>
-  </data>
-  <data name="productBox.Items3" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAENDbGFzc0xpYnJhcnksIFZlcnNpb249MS4wLjAuMCwgQ3VsdHVy
-        ZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsBQEAAAAUQ2xhc3NMaWJyYXJ5LlByb2R1Y3QCAAAA
-        Gjxwcm9kdWN0SWQ+a19fQmFja2luZ0ZpZWxkFTxuYW1lPmtfX0JhY2tpbmdGaWVsZAABCQIAAAADAAAA
-        AAAAAAYDAAAAH01pZHdlc3QgTm9ydGhlYXN0IE1hbnVmYWN0dXJpbmcL
-</value>
-  </data>
-  <data name="productBox.Items4" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAENDbGFzc0xpYnJhcnksIFZlcnNpb249MS4wLjAuMCwgQ3VsdHVy
-        ZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsBQEAAAAUQ2xhc3NMaWJyYXJ5LlByb2R1Y3QCAAAA
-        Gjxwcm9kdWN0SWQ+a19fQmFja2luZ0ZpZWxkFTxuYW1lPmtfX0JhY2tpbmdGaWVsZAABCQIAAAAEAAAA
-        AAAAAAYDAAAAF0NhbGlmb3JuaWEgQWdyaWN1bHR1cmFsCw==
-</value>
-  </data>
-  <data name="productBox.Items5" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAENDbGFzc0xpYnJhcnksIFZlcnNpb249MS4wLjAuMCwgQ3VsdHVy
-        ZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1udWxsBQEAAAAUQ2xhc3NMaWJyYXJ5LlByb2R1Y3QCAAAA
-        Gjxwcm9kdWN0SWQ+a19fQmFja2luZ0ZpZWxkFTxuYW1lPmtfX0JhY2tpbmdGaWVsZAABCQIAAAAFAAAA
-        AAAAAAYDAAAAFENhbGlmb3JuaWEgVGVjaG5pY2FsCw==
-</value>
-  </data>
   <data name="productListBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>17, 56</value>
   </data>
