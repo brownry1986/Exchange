@@ -59,7 +59,6 @@
             this.orderType = new System.Windows.Forms.Label();
             this.trader = new System.Windows.Forms.Label();
             this.traderBox = new System.Windows.Forms.ComboBox();
-            //this.traderBox = new System.Web.UI.WebControls.DropDownList();
             ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.orderDataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productListBindingSource)).BeginInit();

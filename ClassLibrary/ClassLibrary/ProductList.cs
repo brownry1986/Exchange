@@ -13,6 +13,7 @@ namespace ClassLibrary
 
         static ProductList()
         {
+            products.Add(new Product(-1, ""));
             products.Add(new Product(0, "Midwest Agricultural"));
             products.Add(new Product(1, "Midwest Industrial"));
             products.Add(new Product(2, "Midwest Technical"));

@@ -13,7 +13,7 @@ namespace ClassLibrary
 
         static TraderList()
         {
-            traders.Add(new Trader(-1, "--SELECT TRADER--"));
+            traders.Add(new Trader(-1, ""));
             traders.Add(new Trader(0, "Max Gillman"));
             traders.Add(new Trader(1, "Chris Freeman"));
             traders.Add(new Trader(2, "Byron Housten"));
