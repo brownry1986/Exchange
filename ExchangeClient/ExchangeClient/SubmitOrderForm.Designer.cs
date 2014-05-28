@@ -56,9 +56,9 @@
             this.orderTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.buySellDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.quantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.filledQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.priceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.submitTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.matchedDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.orderDataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productListBindingSource)).BeginInit();
@@ -134,9 +134,9 @@
             this.orderTypeDataGridViewTextBoxColumn,
             this.buySellDataGridViewTextBoxColumn,
             this.quantityDataGridViewTextBoxColumn,
+            this.filledQuantity,
             this.priceDataGridViewTextBoxColumn,
-            this.submitTimeDataGridViewTextBoxColumn,
-            this.matchedDataGridViewCheckBoxColumn});
+            this.submitTimeDataGridViewTextBoxColumn});
             this.orderDataGridView1.DataSource = this.orderBindingSource1;
             this.orderDataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.orderDataGridView1.Enabled = false;
@@ -144,7 +144,7 @@
             this.orderDataGridView1.MultiSelect = false;
             this.orderDataGridView1.Name = "orderDataGridView1";
             this.orderDataGridView1.ReadOnly = true;
-            this.orderDataGridView1.Size = new System.Drawing.Size(731, 220);
+            this.orderDataGridView1.Size = new System.Drawing.Size(949, 220);
             this.orderDataGridView1.TabIndex = 10;
             // 
             // buySell
@@ -199,7 +199,7 @@
             this.orderGroupBox.Controls.Add(this.submitOrderGroupBox);
             this.orderGroupBox.Location = new System.Drawing.Point(16, 220);
             this.orderGroupBox.Name = "orderGroupBox";
-            this.orderGroupBox.Size = new System.Drawing.Size(805, 493);
+            this.orderGroupBox.Size = new System.Drawing.Size(1031, 493);
             this.orderGroupBox.TabIndex = 15;
             this.orderGroupBox.TabStop = false;
             this.orderGroupBox.Text = "Order Information";
@@ -211,7 +211,7 @@
             this.activeOrderGroupBox.Controls.Add(this.refreshButton);
             this.activeOrderGroupBox.Location = new System.Drawing.Point(21, 154);
             this.activeOrderGroupBox.Name = "activeOrderGroupBox";
-            this.activeOrderGroupBox.Size = new System.Drawing.Size(760, 314);
+            this.activeOrderGroupBox.Size = new System.Drawing.Size(991, 314);
             this.activeOrderGroupBox.TabIndex = 18;
             this.activeOrderGroupBox.TabStop = false;
             this.activeOrderGroupBox.Text = "Active Orders";
@@ -229,7 +229,7 @@
             this.submitOrderGroupBox.Controls.Add(this.priceLabel);
             this.submitOrderGroupBox.Location = new System.Drawing.Point(21, 28);
             this.submitOrderGroupBox.Name = "submitOrderGroupBox";
-            this.submitOrderGroupBox.Size = new System.Drawing.Size(760, 105);
+            this.submitOrderGroupBox.Size = new System.Drawing.Size(991, 105);
             this.submitOrderGroupBox.TabIndex = 17;
             this.submitOrderGroupBox.TabStop = false;
             this.submitOrderGroupBox.Text = "Submit Order";
@@ -279,7 +279,7 @@
             // 
             this.productGroupBox.Location = new System.Drawing.Point(16, 99);
             this.productGroupBox.Name = "productGroupBox";
-            this.productGroupBox.Size = new System.Drawing.Size(805, 100);
+            this.productGroupBox.Size = new System.Drawing.Size(1031, 100);
             this.productGroupBox.TabIndex = 18;
             this.productGroupBox.TabStop = false;
             this.productGroupBox.Text = "Product Information";
@@ -316,6 +316,13 @@
             this.quantityDataGridViewTextBoxColumn.Name = "quantityDataGridViewTextBoxColumn";
             this.quantityDataGridViewTextBoxColumn.ReadOnly = true;
             // 
+            // filledQuantity
+            // 
+            this.filledQuantity.DataPropertyName = "filledQuantity";
+            this.filledQuantity.HeaderText = "Filled Qty";
+            this.filledQuantity.Name = "filledQuantity";
+            this.filledQuantity.ReadOnly = true;
+            // 
             // priceDataGridViewTextBoxColumn
             // 
             this.priceDataGridViewTextBoxColumn.DataPropertyName = "price";
@@ -331,18 +338,11 @@
             this.submitTimeDataGridViewTextBoxColumn.ReadOnly = true;
             this.submitTimeDataGridViewTextBoxColumn.Width = 200;
             // 
-            // matchedDataGridViewCheckBoxColumn
-            // 
-            this.matchedDataGridViewCheckBoxColumn.DataPropertyName = "matched";
-            this.matchedDataGridViewCheckBoxColumn.HeaderText = "Executed";
-            this.matchedDataGridViewCheckBoxColumn.Name = "matchedDataGridViewCheckBoxColumn";
-            this.matchedDataGridViewCheckBoxColumn.ReadOnly = true;
-            // 
             // SubmitOrderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(856, 894);
+            this.ClientSize = new System.Drawing.Size(1059, 894);
             this.Controls.Add(this.product);
             this.Controls.Add(this.productBox);
             this.Controls.Add(this.executedTradesGroupBox);
@@ -374,16 +374,6 @@
         private System.Windows.Forms.TextBox quantityValue;
         private System.Windows.Forms.TextBox priceValue;
         private System.Windows.Forms.Button refreshButton;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn2;
         private System.Windows.Forms.BindingSource orderBindingSource1;
         private System.Windows.Forms.DataGridView orderDataGridView1;
         private System.Windows.Forms.Label buySell;
@@ -401,17 +391,12 @@
         private System.Windows.Forms.GroupBox activeOrderGroupBox;
         private System.Windows.Forms.GroupBox submitOrderGroupBox;
         private System.Windows.Forms.GroupBox executedTradesGroupBox;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn14;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn15;
         private System.Windows.Forms.DataGridViewTextBoxColumn orderTypeDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn buySellDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn quantityDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn filledQuantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn priceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn submitTimeDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn matchedDataGridViewCheckBoxColumn;
     }
 }
 

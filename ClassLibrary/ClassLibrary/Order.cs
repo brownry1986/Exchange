@@ -27,6 +27,9 @@ namespace ClassLibrary
         public virtual Int64 quantity { get; set; }
 
         [DataMember]
+        public virtual Int64 filledQuantity { get; set; }
+
+        [DataMember]
         public virtual decimal price { get; set; }
 
         [DataMember]
@@ -48,6 +51,7 @@ namespace ClassLibrary
                 + "; buySell = " + buySell.ToString()
                 + "; product = " + productId
                 + "; quantity = " + quantity
+                + "; filledQuantity = " + filledQuantity
                 + "; price = " + price.ToString()
                 + "; cancelled = " + cancelled
                 + "; matched = " + matched;
