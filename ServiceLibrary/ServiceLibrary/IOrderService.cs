@@ -15,7 +15,7 @@ namespace ServiceLibrary
         Order SubmitOrder(Order order);
 
         [OperationContract]
-        List<Order> GetOrders(Int64 traderId);
+        List<Order> GetOrders(Int64 traderId, Int64 productId);
 
         [OperationContract]
         void CancelOrder(Int64 traderId, Int64 orderNumber);

@@ -21,16 +21,6 @@ namespace ExchangeClient
 
         private void SubmitOrderForm_Load(object sender, EventArgs e)
         {
-            Console.WriteLine("Loading Form");
-            OrderService.IOrderService service = new OrderService.OrderServiceClient();
-            List<Order> orders = service.GetOrders(0);
-
-            foreach (Order order in orders)
-            {
-                Console.WriteLine("Received Order: {0}", order.ToString());
-            }
-
-            orderDataGridView1.DataSource = orders;
         }
 
         private void submitButton_Click(object sender, EventArgs e)
@@ -61,8 +51,9 @@ namespace ExchangeClient
         private void refreshOrders()
         {
             Int64 traderId = Convert.ToInt64(traderBox.SelectedValue);
+            Int64 productId = Convert.ToInt64(productBox.SelectedValue);
             OrderService.IOrderService service = new OrderService.OrderServiceClient();
-            List<Order> orders = service.GetOrders(traderId);
+            List<Order> orders = service.GetOrders(traderId, productId);
 
             foreach (Order order in orders)
             {
@@ -76,7 +67,7 @@ namespace ExchangeClient
             traderBox.Enabled = false;
             product.Visible = true;
             productBox.Visible = true;
-            //refreshOrders();
+            refreshOrders();
             //refreshTrades();
         }
 
@@ -86,8 +77,7 @@ namespace ExchangeClient
             productGroupBox.Visible = display;
             orderGroupBox.Visible = display;
             executedTradesGroupBox.Visible = display;
-
-            //refreshOrders();
+            refreshOrders();
             //refreshTrades();
         }
     }

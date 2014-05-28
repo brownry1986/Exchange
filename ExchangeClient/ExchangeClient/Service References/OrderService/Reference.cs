@@ -22,10 +22,10 @@ namespace ExchangeClient.OrderService {
         System.Threading.Tasks.Task<ClassLibrary.Order> SubmitOrderAsync(ClassLibrary.Order order);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IOrderService/GetOrders", ReplyAction="http://tempuri.org/IOrderService/GetOrdersResponse")]
-        System.Collections.Generic.List<ClassLibrary.Order> GetOrders(long traderId);
+        System.Collections.Generic.List<ClassLibrary.Order> GetOrders(long traderId, long productId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IOrderService/GetOrders", ReplyAction="http://tempuri.org/IOrderService/GetOrdersResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<ClassLibrary.Order>> GetOrdersAsync(long traderId);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<ClassLibrary.Order>> GetOrdersAsync(long traderId, long productId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IOrderService/CancelOrder", ReplyAction="http://tempuri.org/IOrderService/CancelOrderResponse")]
         void CancelOrder(long traderId, long orderNumber);
@@ -69,12 +69,12 @@ namespace ExchangeClient.OrderService {
             return base.Channel.SubmitOrderAsync(order);
         }
         
-        public System.Collections.Generic.List<ClassLibrary.Order> GetOrders(long traderId) {
-            return base.Channel.GetOrders(traderId);
+        public System.Collections.Generic.List<ClassLibrary.Order> GetOrders(long traderId, long productId) {
+            return base.Channel.GetOrders(traderId, productId);
         }
         
-        public System.Threading.Tasks.Task<System.Collections.Generic.List<ClassLibrary.Order>> GetOrdersAsync(long traderId) {
-            return base.Channel.GetOrdersAsync(traderId);
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<ClassLibrary.Order>> GetOrdersAsync(long traderId, long productId) {
+            return base.Channel.GetOrdersAsync(traderId, productId);
         }
         
         public void CancelOrder(long traderId, long orderNumber) {

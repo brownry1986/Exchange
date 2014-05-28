@@ -24,9 +24,9 @@ namespace ServiceLibrary
             return (Order)response.payload;
         }
 
-        public List<Order> GetOrders(Int64 traderId)
+        public List<Order> GetOrders(Int64 traderId, Int64 productId)
         {
-            Message message = new Message(MessageType.RetrieveOrders, traderId);
+            Message message = new Message(MessageType.RetrieveOrders, new Tuple<Int64, Int64>(traderId, productId));
             Socket socket = Messenger.SendMessage(message);
             Message response = Messenger.ReceiveMessage(socket);
             Console.WriteLine("Received Response - Message Type: {0}", response.messageType);

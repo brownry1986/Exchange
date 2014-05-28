@@ -92,8 +92,8 @@ namespace OrderMatchingEngine
         {
             public Message Execute(Message message)
             {
-                Console.WriteLine("Retreive Orders Action: {0}", (Int64)message.payload);
-                return new Message(MessageType.Success, orderBook.getOrders((Int64)message.payload));
+                Console.WriteLine("Retreive Orders Action: {0}", (Tuple<Int64, Int64>)message.payload);
+                return new Message(MessageType.Success, orderBook.getOrders((Tuple<Int64, Int64>)message.payload));
             }
 
         }

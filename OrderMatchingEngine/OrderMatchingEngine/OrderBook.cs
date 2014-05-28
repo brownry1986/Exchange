@@ -11,7 +11,7 @@ namespace OrderMatchingEngine
     {
         private Dictionary<Int64, Order> allOrders = new Dictionary<Int64, Order>();
 
-        private Dictionary<Int64, List<Order>> ordersByTrader = new Dictionary<Int64, List<Order>>();
+        private Dictionary<Tuple<Int64, Int64>, List<Order>> ordersByTraderProduct = new Dictionary<Tuple<Int64, Int64>, List<Order>>();
         
         public void addOrder(Order order)
         {
@@ -20,8 +20,10 @@ namespace OrderMatchingEngine
 
             allOrders.Add(order.orderNumber, order);
 
+            Tuple<Int64, Int64> tuple = new Tuple<Int64, Int64>(order.traderId, order.productId);
+
             List<Order> orders;
-            if (ordersByTrader.TryGetValue(order.traderId, out orders))
+            if (ordersByTraderProduct.TryGetValue(tuple, out orders))
             {
                 orders.Add(order);
             }
@@ -29,15 +31,15 @@ namespace OrderMatchingEngine
             {
                 orders = new List<Order>();
                 orders.Add(order);
-                ordersByTrader.Add(order.traderId, orders);
+                ordersByTraderProduct.Add(tuple, orders);
             }
 
         }
 
-        public List<Order> getOrders(Int64 traderId)
+        public List<Order> getOrders(Tuple<Int64, Int64> tuple)
         {
             List<Order> orders;
-            if (ordersByTrader.TryGetValue(traderId, out orders))
+            if (ordersByTraderProduct.TryGetValue(tuple, out orders))
             {
                 return orders;
             }
