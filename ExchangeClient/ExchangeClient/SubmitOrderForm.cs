@@ -73,15 +73,20 @@ namespace ExchangeClient
 
         private void traderBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            productGroupBox.Visible = true;
-            orderGroupBox.Visible = true;
             traderBox.Enabled = false;
+            product.Visible = true;
+            productBox.Visible = true;
             //refreshOrders();
             //refreshTrades();
         }
 
         private void productBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            Boolean display = (productBox.SelectedIndex > 0);
+            productGroupBox.Visible = display;
+            orderGroupBox.Visible = display;
+            executedTradesGroupBox.Visible = display;
+
             //refreshOrders();
             //refreshTrades();
         }
