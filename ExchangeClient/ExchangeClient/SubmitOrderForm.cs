@@ -32,6 +32,7 @@ namespace ExchangeClient
             order.buySell = (BuySell) buySellBox.SelectedItem;
             order.orderType = (OrderType)orderTypeBox.SelectedItem;
             order.quantity = Convert.ToInt64(quantityValue.Text);
+            order.filledQuantity = Convert.ToInt64(0);
             order.price = Convert.ToDecimal(priceValue.Text);
 
             ServiceLibrary.OrderService orderService = new ServiceLibrary.OrderService();

@@ -23,13 +23,15 @@ namespace OrderMatchingEngine
 
         static List<BlockingCollection<Order>> orderQueues = new List<BlockingCollection<Order>>();
 
+        static BlockingCollection<Trade> tradeQueue = new BlockingCollection<Trade>();
+
         static void Main(string[] args)
         {
             foreach (Product product in ProductList.products) 
             {
                 BlockingCollection<Order> queue = new BlockingCollection<Order>();
                 orderQueues.Add(queue);
-                Matcher matcher = new Matcher(queue);
+                Matcher matcher = new Matcher(queue, tradeQueue);
                 Thread matcherThread = new Thread(matcher.Match);
                 matcherThread.Start();
             }
@@ -83,6 +85,7 @@ namespace OrderMatchingEngine
                 orderBook.addOrder(order);
                 BlockingCollection<Order> queue = orderQueues[Convert.ToInt32(order.productId)];
                 queue.Add(order);
+                // Need to ensure that changes made to an order in the match engine are reflected in the order book
                 return new Message(MessageType.Success, order);
             }
 
@@ -93,6 +96,11 @@ namespace OrderMatchingEngine
             public Message Execute(Message message)
             {
                 Console.WriteLine("Retreive Orders Action: {0}", (Tuple<Int64, Int64>)message.payload);
+                List<Order> orders = orderBook.getOrders((Tuple<Int64, Int64>)message.payload);
+                foreach ( Order order in orders ) 
+                {
+                    Console.WriteLine("Retrieved Order: {0}", order);
+                }
                 return new Message(MessageType.Success, orderBook.getOrders((Tuple<Int64, Int64>)message.payload));
             }
 

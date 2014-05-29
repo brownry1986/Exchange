@@ -53,6 +53,8 @@
     <Compile Include="Product.cs" />
     <Compile Include="ProductList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Trade.cs" />
+    <Compile Include="TradeNumberGenerator.cs" />
     <Compile Include="Trader.cs" />
     <Compile Include="TraderList.cs" />
   </ItemGroup>
