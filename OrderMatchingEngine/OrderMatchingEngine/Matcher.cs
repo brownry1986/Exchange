@@ -45,11 +45,11 @@ namespace OrderMatchingEngine
 
                 if (bid.buySell == BuySell.Buy)
                 {
-                    bidPrice = -bidPrice;
+                    keys.Reverse();
                 }
                 else
                 {
-                    keys.Reverse();
+                    bidPrice = -bidPrice;
                 }
 
                 Stack<decimal> offerPrices = new Stack<decimal>(keys);
@@ -61,7 +61,7 @@ namespace OrderMatchingEngine
                 if (bid.unfilledQuantity > 0)
                 {
                     Console.WriteLine("New Order is PARTIALLY MATCHED, add to dictionary");
-                    AddOrder(bid, bidPrice);
+                    AddOrder(bid, -bidPrice);
                 }
             }
         }
@@ -73,7 +73,7 @@ namespace OrderMatchingEngine
                 decimal offerPrice = offerPrices.Pop();
 
                 Console.WriteLine("Bid Price = {0}, Best Offer Price = {1}", bidPrice, offerPrice);
-                if (bidPrice * offerPrice < 0 || bidPrice > offerPrice)
+                if (bidPrice * offerPrice < 0 || bidPrice < offerPrice)
                 {
                     Console.WriteLine("Bid and Best Offer Prices do not overlap");
                     return;

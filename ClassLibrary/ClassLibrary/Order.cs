@@ -30,6 +30,9 @@ namespace ClassLibrary
         public virtual Int64 filledQuantity { get; set; }
 
         [DataMember]
+        public virtual Int64 unfilledQuantity { get { return quantity - filledQuantity; } set { } }
+
+        [DataMember]
         public virtual decimal price { get; set; }
 
         [DataMember]
