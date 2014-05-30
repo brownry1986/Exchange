@@ -21,6 +21,8 @@ namespace OrderMatchingEngine
 
         static OrderBook orderBook;
 
+        static Dictionary<Tuple<Int64, Int64>, List<Trade>> trades = new Dictionary<Tuple<Int64, Int64>, List<Trade>>();
+
         static List<BlockingCollection<Order>> orderQueues = new List<BlockingCollection<Order>>();
 
         static BlockingCollection<Trade> tradeQueue = new BlockingCollection<Trade>();
@@ -36,9 +38,37 @@ namespace OrderMatchingEngine
                 matcherThread.Start();
             }
 
+            TradeLoader tradeLoad = new TradeLoader();
+            Thread tradeLoadThread = new Thread(tradeLoad.Start);
+            tradeLoadThread.Start();
+
             OrderMatchingEngine ome = new OrderMatchingEngine();
             orderBook = new OrderBook();
             ome.Start();
+        }
+
+        public class TradeLoader
+        {
+            public void Start()
+            {
+                while(true)
+                {
+                    Trade trade = tradeQueue.Take();
+                    List<Trade> tradeList;
+                    if (trades.TryGetValue(new Tuple<Int64, Int64>(trade.traderId, trade.productId), out tradeList))
+                    {
+                        tradeList.Add(trade);
+                        Console.WriteLine("Number of Trades: {0}", tradeList.Count);
+                    }
+                    else
+                    {
+                        tradeList = new List<Trade>();
+                        tradeList.Add(trade);
+                        trades.Add(new Tuple<Int64, Int64>(trade.traderId, trade.productId), tradeList);
+                        Console.WriteLine("Number of Trades: {0}", tradeList.Count);
+                    }
+                }
+            }
         }
 
         protected void Start()
@@ -56,6 +86,8 @@ namespace OrderMatchingEngine
                     return new SubmitOrderAction().Execute(message);
                 case MessageType.RetrieveOrders:
                     return new RetrieveOrdersAction().Execute(message);
+                case MessageType.RetrieveTrades:
+                    return new RetrieveTradesAction().Execute(message);
                 case MessageType.CancelOrder:
                     return new CancelOrderAction().Execute(message);
             }
@@ -101,7 +133,27 @@ namespace OrderMatchingEngine
                 {
                     Console.WriteLine("Retrieved Order: {0}", order);
                 }
-                return new Message(MessageType.Success, orderBook.getOrders((Tuple<Int64, Int64>)message.payload));
+                return new Message(MessageType.Success, orders);
+            }
+
+        }
+
+        protected class RetrieveTradesAction : IAction
+        {
+            public Message Execute(Message message)
+            {
+                Console.WriteLine("Retreive Trades Action: {0}", (Tuple<Int64, Int64>)message.payload);
+                List<Trade> retrievedTrades;
+                if (trades.TryGetValue((Tuple<Int64, Int64>)message.payload, out retrievedTrades))
+                {
+                    foreach (Trade trade in retrievedTrades)
+                    {
+                        Console.WriteLine("Retrieved Trade: {0}", trade);
+                    }
+                    return new Message(MessageType.Success, retrievedTrades);
+                }
+
+                return new Message(MessageType.Success, new List<Trade>());
             }
 
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,62 +16,111 @@ using System.Collections.Concurrent;
 
 namespace OrderMatchingEngine
 {
-    class Matcher
+    public class Matcher
     {
         BlockingCollection<Order> orderQueue;
 
         BlockingCollection<Trade> tradeQueue;
 
-        Dictionary<decimal, List<Order>> buyQueue = new Dictionary<decimal, List<Order>>();
-
-        Dictionary<decimal, List<Order>> sellQueue = new Dictionary<decimal, List<Order>>();
+        Dictionary<decimal, List<Order>> orderDictionary;
 
         public Matcher(BlockingCollection<Order> orderQueue, BlockingCollection<Trade> tradeQueue)
         {
             this.orderQueue = orderQueue;
             this.tradeQueue = tradeQueue;
+            orderDictionary = new Dictionary<decimal, List<Order>>();
         }
 
         public void Match()
         {
             while (true)
             {
-                Order order = orderQueue.Take();
-                Console.WriteLine("Matcher got order: {0}", order.ToString());
-                decimal price = order.price;
-                Int64 quantity = order.quantity;
+                Order bid = orderQueue.Take();
+                Console.WriteLine("Matcher got order: {0}", bid.ToString());
 
-                if (order.buySell == BuySell.Buy)
+                Int64 quantity = bid.quantity;
+                decimal bidPrice = bid.price;
+                List<decimal> keys = new List<decimal>(orderDictionary.Keys);
+                keys.Sort();
+
+                if (bid.buySell == BuySell.Buy)
                 {
-                    if (sellQueue.Keys.Count > 0 && price > sellQueue.Keys.Min())
-                    {
-                        MatchOrders(sellQueue, order, sellQueue.Keys.Min());
-                    }
-
-                    if (order.quantity > order.filledQuantity)
-                    {
-                        AddOrder(price, order, buyQueue);
-                    }
+                    bidPrice = -bidPrice;
                 }
                 else
                 {
-                    if (buyQueue.Keys.Count > 0 && price < buyQueue.Keys.Max())
-                    {
-                        MatchOrders(buyQueue, order, buyQueue.Keys.Max());
-                    }
+                    keys.Reverse();
+                }
 
-                    if (order.quantity > order.filledQuantity)
+                Stack<decimal> offerPrices = new Stack<decimal>(keys);
+                decimal bestPrice = offerPrices.Count > 0 ? offerPrices.Peek() : 0;
+
+                Console.WriteLine("Attempt to Match: Bid Price = {0}, Bid Quantity = {1}, Best Offer Price = {2}", bidPrice, quantity, (offerPrices.Count > 0 ? offerPrices.Peek() : 0));
+                MatchOrders(bid, offerPrices, bidPrice);
+
+                if (bid.unfilledQuantity > 0)
+                {
+                    Console.WriteLine("New Order is PARTIALLY MATCHED, add to dictionary");
+                    AddOrder(bid, bidPrice);
+                }
+            }
+        }
+
+        public void MatchOrders(Order bid, Stack<decimal> offerPrices, decimal bidPrice)
+        {
+            while (offerPrices.Count > 0)
+            {
+                decimal offerPrice = offerPrices.Pop();
+
+                Console.WriteLine("Bid Price = {0}, Best Offer Price = {1}", bidPrice, offerPrice);
+                if (bidPrice * offerPrice < 0 || bidPrice > offerPrice)
+                {
+                    Console.WriteLine("Bid and Best Offer Prices do not overlap");
+                    return;
+                }
+
+                List<Order> existingOffers = new List<Order>();
+                if (orderDictionary.TryGetValue(offerPrice, out existingOffers))
+                {
+                    Console.WriteLine("Checking offers at offer price {0}; number of offers {1}", offerPrice, existingOffers.Count);
+                    List<Order> offers = new List<Order>(existingOffers);
+
+                    foreach (Order offer in offers)
                     {
-                        AddOrder(price, order, sellQueue);
+                        Int64 matchedQuantity = Math.Min(bid.unfilledQuantity, offer.unfilledQuantity);
+                        bid.filledQuantity += matchedQuantity;
+                        offer.filledQuantity += matchedQuantity;
+                        DateTime executionTime = DateTime.Now;
+
+                        decimal matchedPrice = bid.price;
+                        tradeQueue.Add(CreateTrade(bid, matchedQuantity, matchedPrice, offer.orderNumber, executionTime));
+                        tradeQueue.Add(CreateTrade(offer, matchedQuantity, matchedPrice, bid.orderNumber, executionTime));
+
+                        if (offer.unfilledQuantity == 0)
+                        {
+                            Console.WriteLine("Existing Order is FULLY MATCHED, remove");
+                            existingOffers.Remove(offer);
+                            if (existingOffers.Count == 0)
+                            {
+                                Console.WriteLine("All offers at offer price {0} are FULLY MATCHED, remove");
+                                orderDictionary.Remove(offerPrice);
+                            }
+                        }
+
+                        if (bid.unfilledQuantity == 0)
+                        {
+                            Console.WriteLine("New Order is FULLY MATCHED, stop");
+                            return;
+                        }
                     }
                 }
             }
         }
 
-        public void AddOrder(decimal price, Order order, Dictionary<decimal, List<Order>> orderQueue)
+        public void AddOrder(Order order, decimal price)
         {
-            List<Order> openOrders = new List<Order>();
-            if (orderQueue.TryGetValue(price, out openOrders))
+            List<Order> openOrders;
+            if (orderDictionary.TryGetValue(price, out openOrders))
             {
                 openOrders.Add(order);
             }
@@ -78,71 +128,26 @@ namespace OrderMatchingEngine
             {
                 openOrders = new List<Order>();
                 openOrders.Add(order);
-                orderQueue.Add(price, openOrders);
+                orderDictionary.Add(price, openOrders);
             }
-
         }
 
-        public void MatchOrders(Dictionary<decimal, List<Order>> queue, Order order, decimal price)
+        public Trade CreateTrade(Order order, Int64 matchedQuantity, decimal matchedPrice, Int64 oppositeOrderId, DateTime executionTime)
         {
-            List<Order> orders = new List<Order>();
-            if (queue.TryGetValue(price, out orders))
-            {
-                if (order.quantity == (orders[0].quantity - orders[0].filledQuantity))
-                {
-                    Console.WriteLine("New Order and Existing Order are FULLY MATCHED");
-                    orders[0].filledQuantity += order.quantity;
-                    order.filledQuantity = order.quantity;
-
-                    // Create trades
-                    Trade trade1 = new Trade();
-                    trade1.tradeId = TradeNumberGenerator.getNext();
-                    trade1.traderId = order.traderId;
-                    trade1.productId = order.productId;
-                    trade1.buySell = order.buySell;
-                    trade1.quantity = order.quantity;
-                    trade1.executionPrice = order.price;
-                    trade1.originalOrderId = order.orderNumber;
-                    trade1.oppositeOrderId = orders[0].orderNumber;
-                    trade1.executionTime = DateTime.Now;
-                    trade1.feeAmount = order.price * Convert.ToDecimal(order.quantity) * Convert.ToDecimal(.001);
-                    Console.WriteLine("Trade Create: {0}", trade1.ToString());
-
-                    Trade trade2 = new Trade();
-                    trade2.tradeId = TradeNumberGenerator.getNext();
-                    trade2.traderId = orders[0].traderId;
-                    trade2.productId = orders[0].productId;
-                    trade2.buySell = orders[0].buySell;
-                    trade2.quantity = order.quantity;
-                    trade2.executionPrice = order.price;
-                    trade2.originalOrderId = orders[0].orderNumber;
-                    trade2.oppositeOrderId = order.orderNumber;
-                    trade2.executionTime = DateTime.Now;
-                    trade2.feeAmount = order.price * Convert.ToDecimal(order.quantity) * Convert.ToDecimal(.001);
-                    Console.WriteLine("Trade Create: {0}", trade2.ToString());
-
-                    // Throw away new order since it is fully matched
-                    // Delete existing order since it is fully matched
-                    orders.RemoveAt(0);
-                }
-                else if (order.quantity < (orders[0].quantity - orders[0].filledQuantity))
-                {
-                    Console.WriteLine("New Order is FULLY MATCHED");
-                    orders[0].filledQuantity += order.quantity;
-                    order.filledQuantity = order.quantity;
-                    // Create trade
-                    // Throw away new order since it is fully matched
-                }
-                else
-                {
-                    Console.WriteLine("Existing Order is FULLY MATCHED");
-                    order.filledQuantity += orders[0].quantity - orders[0].filledQuantity;
-                    orders[0].filledQuantity = orders[0].quantity;
-                    // Create trade
-                    // Add new order to queue since it is only partially matched
-                    // Delete existing order since it is fully matched
-                }
-            }
+            Trade trade = new Trade();
+            trade.tradeId = TradeNumberGenerator.getNext();
+            trade.traderId = order.traderId;
+            trade.productId = order.productId;
+            trade.buySell = order.buySell;
+            trade.quantity = matchedQuantity;
+            trade.executionPrice = matchedPrice;
+            trade.submissionPrice = order.price;
+            trade.originalOrderId = order.orderNumber;
+            trade.oppositeOrderId = oppositeOrderId;
+            trade.executionTime = executionTime;
+            trade.feeAmount = matchedPrice * Convert.ToDecimal(matchedQuantity) * Convert.ToDecimal(.001);
+            Console.WriteLine("Trade Created: {0}", trade.ToString());
+            return trade;
         }
     }
 }
