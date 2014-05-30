@@ -13,7 +13,8 @@ namespace ClassLibrary
         SubmitOrder = 0x01,
         CancelOrder = 0x02,
         RetrieveOrders = 0x03,
-        Success = 0x04,
-        Failure = 0x05
+        RetrieveTrades = 0x04,
+        Success = 0x05,
+        Failure = 0x06
     }
 }

@@ -18,6 +18,9 @@ namespace ServiceLibrary
         List<Order> GetOrders(Int64 traderId, Int64 productId);
 
         [OperationContract]
+        List<Trade> GetTrades(Int64 traderId, Int64 productId);
+
+        [OperationContract]
         void CancelOrder(Int64 traderId, Int64 orderNumber);
 
         /*

@@ -61,6 +61,13 @@ namespace ExchangeClient
                 Console.WriteLine("Received Order: {0}", order.ToString());
             }
             orderDataGridView1.DataSource = orders;
+
+            List<Trade> trades = service.GetTrades(traderId, productId);
+
+            foreach (Trade trade in trades)
+            {
+                Console.WriteLine("Received Trade: {0}", trade.ToString());
+            }
         }
 
         private void traderBox_SelectedIndexChanged(object sender, EventArgs e)

@@ -39,6 +39,21 @@ namespace ServiceLibrary
             return orders;
         }
 
+        public List<Trade> GetTrades(Int64 traderId, Int64 productId)
+        {
+            Message message = new Message(MessageType.RetrieveTrades, new Tuple<Int64, Int64>(traderId, productId));
+            Socket socket = Messenger.SendMessage(message);
+            Message response = Messenger.ReceiveMessage(socket);
+            Console.WriteLine("Received Response - Message Type: {0}", response.messageType);
+            Console.WriteLine("Received Response - Order: {0}", (List<Trade>)response.payload);
+            List<Trade> trades = (List<Trade>)response.payload;
+            foreach (Trade trade in trades)
+            {
+                System.Console.WriteLine("Trade Retrieved: {0}", trade.ToString());
+            }
+            return trades;
+        }
+
         public void CancelOrder(Int64 traderId, Int64 orderNumber)
         {
             Message message = new Message(MessageType.CancelOrder, orderNumber);
