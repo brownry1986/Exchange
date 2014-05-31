@@ -27,9 +27,9 @@ namespace ClassLibrary
             products.Add(new Product(10, "Cal-Ag-C", "California Agricultural", "C"));
             products.Add(new Product(11, "Cal-Ag-D", "California Agricultural", "D"));
             products.Add(new Product(12, "Cal-Tech-A", "California Technical", "A"));
-            products.Add(new Product(12, "Cal-Tech-B", "California Technical", "B"));
-            products.Add(new Product(12, "Cal-Tech-C", "California Technical", "C"));
-            products.Add(new Product(12, "Cal-Tech-D", "California Technical", "D"));
+            products.Add(new Product(13, "Cal-Tech-B", "California Technical", "B"));
+            products.Add(new Product(14, "Cal-Tech-C", "California Technical", "C"));
+            products.Add(new Product(15, "Cal-Tech-D", "California Technical", "D"));
         }
     }
 }

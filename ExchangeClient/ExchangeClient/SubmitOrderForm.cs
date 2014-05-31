@@ -33,19 +33,15 @@ namespace ExchangeClient
             order.orderType = (OrderType)orderTypeBox.SelectedItem;
             order.quantity = Convert.ToInt64(quantityValue.Text);
             order.filledQuantity = Convert.ToInt64(0);
-            order.price = Convert.ToDecimal(priceValue.Text);
+            order.price = order.orderType == OrderType.Limit ? Convert.ToDecimal(priceValue.Text) : Convert.ToDecimal(0);
 
             ServiceLibrary.OrderService orderService = new ServiceLibrary.OrderService();
             Order submittedOrder = orderService.SubmitOrder(order);
-            System.Console.WriteLine("Order Submission Successful: Order Number = " + submittedOrder.orderNumber);
             refreshOrders();
-            //orderService.CancelOrder(1234, submittedOrder.orderNumber);
-            //System.Console.WriteLine("Order Cancellation Successful: Order Number = " + submittedOrder.orderNumber);
         }
 
         private void refreshButton_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Refresh Button Clicked");
             refreshOrders();
         }
 
@@ -54,20 +50,29 @@ namespace ExchangeClient
             Int64 traderId = Convert.ToInt64(traderBox.SelectedValue);
             Int64 productId = Convert.ToInt64(productBox.SelectedValue);
             OrderService.IOrderService service = new OrderService.OrderServiceClient();
-            List<Order> orders = service.GetOrders(traderId, productId);
+            List<Order> orders = service.GetOrders(productId, traderId);
 
             foreach (Order order in orders)
             {
                 Console.WriteLine("Received Order: {0}", order.ToString());
             }
-            orderDataGridView1.DataSource = orders;
+            orderDataGridView.DataSource = orders;
+        }
 
-            List<Trade> trades = service.GetTrades(traderId, productId);
+        private void refreshTrades()
+        {
+            Int64 traderId = Convert.ToInt64(traderBox.SelectedValue);
+            Int64 productId = Convert.ToInt64(productBox.SelectedValue);
+            OrderService.IOrderService service = new OrderService.OrderServiceClient();
+
+            List<Trade> trades = service.GetTrades(productId, traderId);
 
             foreach (Trade trade in trades)
             {
                 Console.WriteLine("Received Trade: {0}", trade.ToString());
             }
+
+            tradeDataGridView.DataSource = trades;
         }
 
         private void traderBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -75,8 +80,6 @@ namespace ExchangeClient
             traderBox.Enabled = false;
             product.Visible = true;
             productBox.Visible = true;
-            refreshOrders();
-            //refreshTrades();
         }
 
         private void productBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -86,7 +89,7 @@ namespace ExchangeClient
             orderGroupBox.Visible = display;
             executedTradesGroupBox.Visible = display;
             refreshOrders();
-            //refreshTrades();
+            refreshTrades();
         }
     }
 }

@@ -24,9 +24,9 @@ namespace ServiceLibrary
             return (Order)response.payload;
         }
 
-        public List<Order> GetOrders(Int64 traderId, Int64 productId)
+        public List<Order> GetOrders(Int64 productId, Int64 traderId)
         {
-            Message message = new Message(MessageType.RetrieveOrders, new Tuple<Int64, Int64>(traderId, productId));
+            Message message = new Message(MessageType.RetrieveOrders, new Tuple<Int64, Int64>(productId, traderId));
             Socket socket = Messenger.SendMessage(message);
             Message response = Messenger.ReceiveMessage(socket);
             Console.WriteLine("Received Response - Message Type: {0}", response.messageType);
@@ -39,9 +39,9 @@ namespace ServiceLibrary
             return orders;
         }
 
-        public List<Trade> GetTrades(Int64 traderId, Int64 productId)
+        public List<Trade> GetTrades(Int64 productId, Int64 traderId)
         {
-            Message message = new Message(MessageType.RetrieveTrades, new Tuple<Int64, Int64>(traderId, productId));
+            Message message = new Message(MessageType.RetrieveTrades, new Tuple<Int64, Int64>(productId, traderId));
             Socket socket = Messenger.SendMessage(message);
             Message response = Messenger.ReceiveMessage(socket);
             Console.WriteLine("Received Response - Message Type: {0}", response.messageType);
@@ -54,7 +54,18 @@ namespace ServiceLibrary
             return trades;
         }
 
-        public void CancelOrder(Int64 traderId, Int64 orderNumber)
+        public Tuple<String, String> GetBidAsk(Int64 productId)
+        {
+            Message message = new Message(MessageType.RetrieveTrades, productId);
+            Socket socket = Messenger.SendMessage(message);
+            Message response = Messenger.ReceiveMessage(socket);
+            Console.WriteLine("Received Response - Message Type: {0}", response.messageType);
+            Tuple<String, String> tuple = (Tuple<String, String>)response.payload;
+            Console.WriteLine("Received Response - Bid/Ask: {0}/{1}", tuple.Item1, tuple.Item2);
+            return tuple;
+        }
+
+        public void CancelOrder(Int64 productId, Int64 orderNumber)
         {
             Message message = new Message(MessageType.CancelOrder, orderNumber);
             Socket socket = Messenger.SendMessage(message);

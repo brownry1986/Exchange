@@ -22,13 +22,20 @@ namespace OrderMatchingEngine
 
         BlockingCollection<Trade> tradeQueue;
 
-        Dictionary<decimal, List<Order>> orderDictionary;
+        Dictionary<decimal, List<Order>> buyQueue;
 
-        public Matcher(BlockingCollection<Order> orderQueue, BlockingCollection<Trade> tradeQueue)
+        Dictionary<decimal, List<Order>> sellQueue;
+
+        OrderBook orderBook;
+
+        public Matcher(BlockingCollection<Order> orderQueue, BlockingCollection<Trade> tradeQueue, OrderBook orderBook)
         {
             this.orderQueue = orderQueue;
             this.tradeQueue = tradeQueue;
-            orderDictionary = new Dictionary<decimal, List<Order>>();
+            this.orderBook = orderBook;
+
+            buyQueue = new Dictionary<decimal, List<Order>>();
+            sellQueue = new Dictionary<decimal, List<Order>>();
         }
 
         public void Match()
@@ -40,17 +47,21 @@ namespace OrderMatchingEngine
 
                 Int64 quantity = bid.quantity;
                 decimal bidPrice = bid.price;
-                List<decimal> keys = new List<decimal>(orderDictionary.Keys);
+                List<decimal> keys = new List<decimal>(GetOfferQueue(bid.buySell).Keys);
                 keys.Sort();
+                keys.Reverse();
 
-                if (bid.buySell == BuySell.Buy)
-                {
-                    keys.Reverse();
-                }
-                else
+                if (bid.buySell == BuySell.Sell)
                 {
                     bidPrice = -bidPrice;
                 }
+
+                Console.Write("Offer Prices: ");
+                foreach (decimal key in keys)
+                {
+                    Console.Write("{0} ", key);
+                }
+                Console.WriteLine("; Bid Price: {0}", bidPrice);
 
                 Stack<decimal> offerPrices = new Stack<decimal>(keys);
                 decimal bestPrice = offerPrices.Count > 0 ? offerPrices.Peek() : 0;
@@ -63,24 +74,38 @@ namespace OrderMatchingEngine
                     Console.WriteLine("New Order is PARTIALLY MATCHED, add to dictionary");
                     AddOrder(bid, -bidPrice);
                 }
+
+                List<decimal> bidPrices = new List<decimal>(buyQueue.Keys);
+                bidPrices.Sort();
+                if (bidPrices.Count > 0) {
+                    orderBook.setBidPrice(Convert.ToString(-bidPrices.Last()));
+                }
+
+                List<decimal> askPrices = new List<decimal>(sellQueue.Keys);
+                askPrices.Sort();
+                if (askPrices.Count > 0) {
+                    orderBook.setAskPrice(Convert.ToString(askPrices.First()));
+                }
             }
         }
 
         public void MatchOrders(Order bid, Stack<decimal> offerPrices, decimal bidPrice)
         {
+            Dictionary<decimal, List<Order>> offerQueue = GetOfferQueue(bid.buySell);
+
             while (offerPrices.Count > 0)
             {
                 decimal offerPrice = offerPrices.Pop();
 
                 Console.WriteLine("Bid Price = {0}, Best Offer Price = {1}", bidPrice, offerPrice);
-                if (bidPrice * offerPrice < 0 || bidPrice < offerPrice)
+                if (bid.orderType == OrderType.Limit && bidPrice < offerPrice)
                 {
                     Console.WriteLine("Bid and Best Offer Prices do not overlap");
                     return;
                 }
 
                 List<Order> existingOffers = new List<Order>();
-                if (orderDictionary.TryGetValue(offerPrice, out existingOffers))
+                if (offerQueue.TryGetValue(offerPrice, out existingOffers))
                 {
                     Console.WriteLine("Checking offers at offer price {0}; number of offers {1}", offerPrice, existingOffers.Count);
                     List<Order> offers = new List<Order>(existingOffers);
@@ -92,7 +117,7 @@ namespace OrderMatchingEngine
                         offer.filledQuantity += matchedQuantity;
                         DateTime executionTime = DateTime.Now;
 
-                        decimal matchedPrice = bid.price;
+                        decimal matchedPrice = offer.price;
                         tradeQueue.Add(CreateTrade(bid, matchedQuantity, matchedPrice, offer.orderNumber, executionTime));
                         tradeQueue.Add(CreateTrade(offer, matchedQuantity, matchedPrice, bid.orderNumber, executionTime));
 
@@ -103,7 +128,7 @@ namespace OrderMatchingEngine
                             if (existingOffers.Count == 0)
                             {
                                 Console.WriteLine("All offers at offer price {0} are FULLY MATCHED, remove");
-                                orderDictionary.Remove(offerPrice);
+                                offerQueue.Remove(offerPrice);
                             }
                         }
 
@@ -119,8 +144,9 @@ namespace OrderMatchingEngine
 
         public void AddOrder(Order order, decimal price)
         {
+            Dictionary<decimal, List<Order>> bidQueue = GetBidQueue(order.buySell);
             List<Order> openOrders;
-            if (orderDictionary.TryGetValue(price, out openOrders))
+            if (bidQueue.TryGetValue(price, out openOrders))
             {
                 openOrders.Add(order);
             }
@@ -128,7 +154,7 @@ namespace OrderMatchingEngine
             {
                 openOrders = new List<Order>();
                 openOrders.Add(order);
-                orderDictionary.Add(price, openOrders);
+                bidQueue.Add(price, openOrders);
             }
         }
 
@@ -148,6 +174,16 @@ namespace OrderMatchingEngine
             trade.feeAmount = matchedPrice * Convert.ToDecimal(matchedQuantity) * Convert.ToDecimal(.001);
             Console.WriteLine("Trade Created: {0}", trade.ToString());
             return trade;
+        }
+
+        private Dictionary<decimal, List<Order>> GetBidQueue(BuySell buySell)
+        {
+            return buySell == BuySell.Buy ? buyQueue : sellQueue;
+        }
+
+        private Dictionary<decimal, List<Order>> GetOfferQueue(BuySell buySell)
+        {
+            return buySell == BuySell.Buy ? sellQueue : buyQueue;
         }
     }
 }

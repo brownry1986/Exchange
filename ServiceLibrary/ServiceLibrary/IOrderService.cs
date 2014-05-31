@@ -15,21 +15,16 @@ namespace ServiceLibrary
         Order SubmitOrder(Order order);
 
         [OperationContract]
-        List<Order> GetOrders(Int64 traderId, Int64 productId);
+        List<Order> GetOrders(Int64 productId, Int64 traderId);
 
         [OperationContract]
-        List<Trade> GetTrades(Int64 traderId, Int64 productId);
+        List<Trade> GetTrades(Int64 productId, Int64 traderId);
 
         [OperationContract]
-        void CancelOrder(Int64 traderId, Int64 orderNumber);
-
-        /*
-        [OperationContract]
-        decimal GetAskPrice();
+        void CancelOrder(Int64 productId, Int64 orderId);
 
         [OperationContract]
-        decimal GetBidPrice();
-        */
+        Tuple<String, String> GetBidAsk(Int64 productId);
     }
 
 }

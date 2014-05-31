@@ -14,7 +14,8 @@ namespace ClassLibrary
         CancelOrder = 0x02,
         RetrieveOrders = 0x03,
         RetrieveTrades = 0x04,
-        Success = 0x05,
-        Failure = 0x06
+        RetrieveBidAsk = 0x05,
+        Success = 0x10,
+        Failure = 0x11
     }
 }

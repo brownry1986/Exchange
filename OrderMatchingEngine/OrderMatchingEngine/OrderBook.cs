@@ -9,10 +9,21 @@ namespace OrderMatchingEngine
 {
     public class OrderBook
     {
+        private Int64 productId;
+
         private Dictionary<Int64, Order> allOrders = new Dictionary<Int64, Order>();
 
-        private Dictionary<Tuple<Int64, Int64>, List<Order>> ordersByTraderProduct = new Dictionary<Tuple<Int64, Int64>, List<Order>>();
-        
+        private Dictionary<Int64, List<Order>> ordersByTrader = new Dictionary<Int64, List<Order>>();
+
+        private String bidPrice = "N/A";
+
+        private String askPrice = "N/A";
+
+        public OrderBook(Int64 productId)
+        {
+            this.productId = productId;
+        }
+
         public void addOrder(Order order)
         {
             order.orderNumber = OrderNumberGenerator.getNext();
@@ -20,10 +31,8 @@ namespace OrderMatchingEngine
 
             allOrders.Add(order.orderNumber, order);
 
-            Tuple<Int64, Int64> tuple = new Tuple<Int64, Int64>(order.traderId, order.productId);
-
             List<Order> orders;
-            if (ordersByTraderProduct.TryGetValue(tuple, out orders))
+            if (ordersByTrader.TryGetValue(order.traderId, out orders))
             {
                 orders.Add(order);
             }
@@ -31,15 +40,14 @@ namespace OrderMatchingEngine
             {
                 orders = new List<Order>();
                 orders.Add(order);
-                ordersByTraderProduct.Add(tuple, orders);
+                ordersByTrader.Add(order.traderId, orders);
             }
-
         }
 
-        public List<Order> getOrders(Tuple<Int64, Int64> tuple)
+        public List<Order> getOrders(Int64 traderId)
         {
             List<Order> orders;
-            if (ordersByTraderProduct.TryGetValue(tuple, out orders))
+            if (ordersByTrader.TryGetValue(traderId, out orders))
             {
                 return orders;
             }
@@ -57,5 +65,24 @@ namespace OrderMatchingEngine
             return false;
         }
 
+        public void setBidPrice(String bidPrice)
+        {
+            this.bidPrice = bidPrice;
+        }
+
+        public void setAskPrice(String askPrice)
+        {
+            this.askPrice = askPrice;
+        }
+
+        public String getBidPrice()
+        {
+            return this.bidPrice;
+        }
+
+        public String getAskPrice()
+        {
+            return this.askPrice;
+        }
     }
 }
