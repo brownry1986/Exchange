@@ -56,7 +56,7 @@ namespace ServiceLibrary
 
         public Tuple<String, String> GetBidAsk(Int64 productId)
         {
-            Message message = new Message(MessageType.RetrieveTrades, productId);
+            Message message = new Message(MessageType.RetrieveBidAsk, productId);
             Socket socket = Messenger.SendMessage(message);
             Message response = Messenger.ReceiveMessage(socket);
             Console.WriteLine("Received Response - Message Type: {0}", response.messageType);

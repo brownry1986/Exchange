@@ -78,7 +78,7 @@ namespace OrderMatchingEngine
                 List<decimal> bidPrices = new List<decimal>(buyQueue.Keys);
                 bidPrices.Sort();
                 if (bidPrices.Count > 0) {
-                    orderBook.setBidPrice(Convert.ToString(-bidPrices.Last()));
+                    orderBook.setBidPrice(Convert.ToString(-bidPrices.First()));
                 }
 
                 List<decimal> askPrices = new List<decimal>(sellQueue.Keys);

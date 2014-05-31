@@ -33,6 +33,12 @@ namespace ExchangeClient.OrderService {
         [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IOrderService/GetTrades", ReplyAction = "http://tempuri.org/IOrderService/GetTradesResponse")]
         System.Threading.Tasks.Task<System.Collections.Generic.List<ClassLibrary.Trade>> GetTradesAsync(long productId, long traderId);
 
+        [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IOrderService/GetBidAsk", ReplyAction = "http://tempuri.org/IOrderService/GetBidAskResponse")]
+        System.Tuple<System.String, System.String> GetBidAsk(long productId);
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IOrderService/GetBidAsk", ReplyAction = "http://tempuri.org/IOrderService/GetBidAskResponse")]
+        System.Threading.Tasks.Task<System.Tuple<System.String, System.String>> GetBidAskAsync(long productId);
+
         [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IOrderService/CancelOrder", ReplyAction = "http://tempuri.org/IOrderService/CancelOrderResponse")]
         void CancelOrder(long traderId, long orderNumber);
         
@@ -77,7 +83,7 @@ namespace ExchangeClient.OrderService {
 
         public System.Collections.Generic.List<ClassLibrary.Order> GetOrders(long productId, long traderId)
         {
-            return base.Channel.GetOrders(traderId, productId);
+            return base.Channel.GetOrders(productId, traderId);
         }
 
         public System.Threading.Tasks.Task<System.Collections.Generic.List<ClassLibrary.Order>> GetOrdersAsync(long productId, long traderId)
@@ -87,15 +93,26 @@ namespace ExchangeClient.OrderService {
 
         public System.Collections.Generic.List<ClassLibrary.Trade> GetTrades(long productId, long traderId)
         {
-            return base.Channel.GetTrades(traderId, productId);
+            return base.Channel.GetTrades(productId, traderId);
         }
 
         public System.Threading.Tasks.Task<System.Collections.Generic.List<ClassLibrary.Trade>> GetTradesAsync(long productId, long traderId)
         {
-            return base.Channel.GetTradesAsync(traderId, productId);
+            return base.Channel.GetTradesAsync(productId, traderId);
         }
 
-        public void CancelOrder(long productId, long orderNumber) {
+        public System.Tuple<System.String, System.String> GetBidAsk(long productId)
+        {
+            return base.Channel.GetBidAsk(productId);
+        }
+
+        public System.Threading.Tasks.Task<System.Tuple<System.String, System.String>> GetBidAskAsync(long productId)
+        {
+            return base.Channel.GetBidAskAsync(productId);
+        }
+
+        public void CancelOrder(long productId, long orderNumber)
+        {
             base.Channel.CancelOrder(productId, orderNumber);
         }
         

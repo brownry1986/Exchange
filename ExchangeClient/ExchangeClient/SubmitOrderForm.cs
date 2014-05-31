@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClassLibrary;
@@ -14,18 +15,20 @@ namespace ExchangeClient
     public partial class SubmitOrderForm : Form
     {
 
+        protected static Boolean refresh = false;
+
+        protected static Boolean active = true;
+
         public SubmitOrderForm()
         {
             InitializeComponent();
-        }
-
-        private void SubmitOrderForm_Load(object sender, EventArgs e)
-        {
+            Refresher refresher = new Refresher(this);
+            Thread refresherThread = new Thread(refresher.Start);
+            refresherThread.Start();
         }
 
         private void submitButton_Click(object sender, EventArgs e)
         {
-
             Order order = new Order();
             order.traderId = Convert.ToInt64(traderBox.SelectedValue);
             order.productId = Convert.ToInt64(productBox.SelectedValue);
@@ -45,7 +48,7 @@ namespace ExchangeClient
             refreshOrders();
         }
 
-        private void refreshOrders()
+        protected void refreshOrders()
         {
             Int64 traderId = Convert.ToInt64(traderBox.SelectedValue);
             Int64 productId = Convert.ToInt64(productBox.SelectedValue);
@@ -75,6 +78,14 @@ namespace ExchangeClient
             tradeDataGridView.DataSource = trades;
         }
 
+        private void refreshProductInformation()
+        {
+            OrderService.IOrderService service = new OrderService.OrderServiceClient();
+            Tuple<String, String> bidAsk = service.GetBidAsk(Convert.ToInt64(productBox.SelectedValue));
+            bidPriceBox.Text = bidAsk.Item1;
+            askPriceBox.Text = bidAsk.Item2;
+        }
+
         private void traderBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             traderBox.Enabled = false;
@@ -88,8 +99,50 @@ namespace ExchangeClient
             productGroupBox.Visible = display;
             orderGroupBox.Visible = display;
             executedTradesGroupBox.Visible = display;
-            refreshOrders();
-            refreshTrades();
+
+            if (display)
+            {
+                refreshOrders();
+                refreshTrades();
+                refreshProductInformation();
+            }
+
+            SubmitOrderForm.refresh = display;
+        }
+
+        private void form_Close(object sender, EventArgs e)
+        {
+            SubmitOrderForm.active = false;
+        }
+
+        protected class Refresher
+        {
+            SubmitOrderForm form;
+
+            public Refresher(SubmitOrderForm form)
+            {
+                this.form = form;
+            }
+
+            public void Start()
+            {
+                while (SubmitOrderForm.active)
+                {
+                    if (SubmitOrderForm.refresh)
+                    {
+                        form.Invoke(new MethodInvoker(() => Refresh()));
+                    }
+                    Thread.Sleep(2000);
+                }
+            }
+
+            public void Refresh()
+            {
+                form.refreshOrders();
+                form.refreshTrades();
+                form.refreshProductInformation();
+            }
+
         }
     }
 }
