@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using Trader;
@@ -41,7 +42,8 @@ namespace Simulation
                 // Create new buy order
                 Order buyOrder = new Order();
                 buyOrder.buySell = BuySell.Buy;
-                buyOrder.productId = 1;
+                buyOrder.orderType = OrderType.Limit;
+                buyOrder.productId = 0;
                 buyOrder.traderId = 0;
                 buyOrder.quantity = Convert.ToInt64(SimQtyLog(100, 10));
                 buyOrder.price = Convert.ToDecimal(SimPriceLog(nextprice * .90, 10.0));
@@ -51,12 +53,14 @@ namespace Simulation
                 // Create new sell order
                 Order sellOrder = new Order();
                 sellOrder.buySell = BuySell.Sell;
-                sellOrder.productId = 1;
+                sellOrder.orderType = OrderType.Limit;
+                sellOrder.productId = 0;
                 sellOrder.traderId = 1;
                 sellOrder.quantity = Convert.ToInt64(SimQtyLog(100, 10));
                 sellOrder.price = Convert.ToDecimal(SimPriceLog(nextprice * 1.10, 10.0));
                 sellOrders.Add(sellOrder);
                 SubmitOrder(sellOrder);
+                Thread.Sleep(100);
             }
         }
 
@@ -87,7 +91,7 @@ namespace Simulation
 
         public void RetreiveOrders(Int64 traderId)
         {
-            Message message = new Message(MessageType.RetrieveOrders, traderId);
+            Message message = new Message(MessageType.RetrieveOrders, new Tuple<Int64, Int64>(0, traderId));
             Socket socket = Messenger.SendMessage(message);
             Message response = Messenger.ReceiveMessage(socket);
             foreach (Order order in (List<Order>)response.payload)
@@ -100,17 +104,11 @@ namespace Simulation
     {
         static void Main()
         {
-            Trader max = new Trader(100.0, 2.0, 50.0, 10);
-            max.OrderGenerator();
-            Console.WriteLine("These are the buy orders:");
-            max.PrintOrders(BuySell.Buy);
-            Console.WriteLine("These are the sell orders:");
-            max.PrintOrders(BuySell.Sell);
-            Console.WriteLine("These are the orders submitted by trader 0:");
-            max.RetreiveOrders(0);
-            Console.WriteLine("These are the orders submitted by trader 1:");
-            max.RetreiveOrders(1);
-            Console.Read();
+            Trader max = new Trader(100.0, 2.0, 50.0, 1000);
+            while (true)
+            {
+                max.OrderGenerator();
+            }
         }
     }
 }
