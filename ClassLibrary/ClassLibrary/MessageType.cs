@@ -15,6 +15,8 @@ namespace ClassLibrary
         RetrieveOrders = 0x03,
         RetrieveTrades = 0x04,
         RetrieveBidAsk = 0x05,
+        AdminRetrieveOrders = 0x06,
+        AdminRetrieveTrades = 0x07,
         Success = 0x10,
         Failure = 0x11
     }

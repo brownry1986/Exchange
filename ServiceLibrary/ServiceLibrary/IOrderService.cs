@@ -21,10 +21,7 @@ namespace ServiceLibrary
         List<Trade> GetTrades(Int64 productId, Int64 traderId);
 
         [OperationContract]
-        void CancelOrder(Int64 productId, Int64 orderId);
-
-        [OperationContract]
-        Tuple<String, String> GetBidAsk(Int64 productId);
+        BidAsk GetBidAsk(Int64 productId);
     }
 
 }

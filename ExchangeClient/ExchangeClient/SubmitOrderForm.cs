@@ -132,7 +132,7 @@ namespace ExchangeClient
                     {
                         form.Invoke(new MethodInvoker(() => Refresh()));
                     }
-                    Thread.Sleep(2000);
+                    Thread.Sleep(5000);
                 }
             }
 
@@ -142,7 +142,6 @@ namespace ExchangeClient
                 form.refreshTrades();
                 form.refreshProductInformation();
             }
-
         }
     }
 }

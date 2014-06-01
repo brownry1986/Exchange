@@ -55,10 +55,19 @@ namespace ClassLibrary
                 Console.WriteLine("Payload Size: {0}", dataSize);
 
                 byte[] data = new byte[dataSize];
-                bytesRead = socket.Receive(data);
+                byte[] buffer = new byte[1024];
 
-                Console.WriteLine("Bytes read: {0}", bytesRead);
-                Console.WriteLine("Payload Size: {0}", data.Length);
+
+                Int32 totalBytesRead = 0;
+                while (totalBytesRead < dataSize)
+                {
+                    bytesRead = socket.Receive(buffer);
+                    Console.WriteLine("Bytes read: {0}", bytesRead);
+                    Array.Copy(buffer, 0, data, totalBytesRead, bytesRead);
+                    totalBytesRead += bytesRead;
+                }
+                Console.WriteLine("Bytes read: {0}", totalBytesRead);
+                Console.WriteLine("Payload Size: {0}", dataSize);
 
                 MemoryStream stream = new MemoryStream(data);
                 IFormatter formatter = new BinaryFormatter();
@@ -89,8 +98,10 @@ namespace ClassLibrary
             data[2] = intBytes[1];
             data[3] = intBytes[2];
             data[4] = intBytes[3];
+            Console.WriteLine("Length Bytes: {0} {1} {2} {3}", data[1], data[2], data[3], data[4]);
             Array.Copy(payload, 0, data, 5, payload.Length);
 
+            Console.WriteLine("Sending");
             socket.Send(data);
         }
 

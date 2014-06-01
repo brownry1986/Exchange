@@ -19,8 +19,6 @@ namespace OrderMatchingEngine
     class OrderMatchingEngine
     {
 
-        //static OrderBook orderBook;
-
         static Dictionary<Int64, OrderBook> orderBooks = new Dictionary<Int64,OrderBook>();
 
         static Dictionary<Tuple<Int64, Int64>, List<Trade>> trades = new Dictionary<Tuple<Int64, Int64>, List<Trade>>();
@@ -41,7 +39,7 @@ namespace OrderMatchingEngine
                 orderQueues.Add(orderQueue);
                 OrderBook orderBook = new OrderBook(product.productId);
                 orderBooks.Add(product.productId, orderBook);
-                Matcher matcher = new Matcher(orderQueue, tradeQueue, orderBook);
+                Matcher matcher = new Matcher(orderQueue, tradeQueue);
                 Thread matcherThread = new Thread(matcher.Match);
                 matcherThread.Start();
             }
@@ -61,18 +59,11 @@ namespace OrderMatchingEngine
                 while(true)
                 {
                     Trade trade = tradeQueue.Take();
-                    List<Trade> tradeList;
-                    if (trades.TryGetValue(new Tuple<Int64, Int64>(trade.traderId, trade.productId), out tradeList))
+
+                    OrderBook orderBook;
+                    if (orderBooks.TryGetValue(trade.productId, out orderBook))
                     {
-                        tradeList.Add(trade);
-                        Console.WriteLine("Number of Trades: {0}", tradeList.Count);
-                    }
-                    else
-                    {
-                        tradeList = new List<Trade>();
-                        tradeList.Add(trade);
-                        trades.Add(new Tuple<Int64, Int64>(trade.traderId, trade.productId), tradeList);
-                        Console.WriteLine("Number of Trades: {0}", tradeList.Count);
+                        orderBook.AddTrade(trade);
                     }
                 }
             }
@@ -97,8 +88,10 @@ namespace OrderMatchingEngine
                     return new RetrieveTradesAction().Execute(message);
                 case MessageType.RetrieveBidAsk:
                     return new RetrieveBidAskAction().Execute(message);
-                case MessageType.CancelOrder:
-                    return new CancelOrderAction().Execute(message);
+                case MessageType.AdminRetrieveOrders:
+                    return new AdminRetrieveOrdersAction().Execute(message);
+                case MessageType.AdminRetrieveTrades:
+                    return new AdminRetrieveTradesAction().Execute(message);
             }
 
             return new Message(MessageType.Failure, 0);
@@ -111,7 +104,6 @@ namespace OrderMatchingEngine
             Socket socket = caller.EndInvoke(result);
 
             Message message = Messenger.ReceiveMessage(socket);
-            Console.WriteLine("In Callback - Message Type: {0}", message.messageType);
             Message response = ProcessAction(message);
             Messenger.SendMessage(socket, response);
             socket.Close();
@@ -126,12 +118,9 @@ namespace OrderMatchingEngine
                 OrderBook orderBook;
                 if (orderBooks.TryGetValue(order.productId, out orderBook))
                 {
-                    orderBook.addOrder(order);
+                    orderBook.AddOrder(order);
                     BlockingCollection<Order> queue = orderQueues[Convert.ToInt32(order.productId)];
                     queue.Add(order);
-
-                    Console.WriteLine("===================================");
-                    Console.WriteLine("Bid / Ask = {0} / {1}", orderBook.getBidPrice(), orderBook.getAskPrice());
 
                     return new Message(MessageType.Success, order);
                 }
@@ -150,12 +139,7 @@ namespace OrderMatchingEngine
                 Tuple<Int64, Int64> tuple = (Tuple<Int64, Int64>)message.payload;
                 if (orderBooks.TryGetValue(tuple.Item1, out orderBook))
                 {
-                    List<Order> orders = orderBook.getOrders(tuple.Item2);
-                    foreach (Order order in orders)
-                    {
-                        Console.WriteLine("Retrieved Order: {0}", order);
-                    }
-                    return new Message(MessageType.Success, orders);
+                    return new Message(MessageType.Success, orderBook.GetActiveOrders(tuple.Item2));
                 }
                 return new Message(MessageType.Failure, message.payload);
             }
@@ -167,19 +151,45 @@ namespace OrderMatchingEngine
             public Message Execute(Message message)
             {
                 Console.WriteLine("Retreive Trades Action: {0}", (Tuple<Int64, Int64>)message.payload);
-                List<Trade> retrievedTrades;
-                if (trades.TryGetValue((Tuple<Int64, Int64>)message.payload, out retrievedTrades))
+                OrderBook orderBook;
+                Tuple<Int64, Int64> tuple = (Tuple<Int64, Int64>)message.payload;
+                if (orderBooks.TryGetValue(tuple.Item1, out orderBook))
                 {
-                    foreach (Trade trade in retrievedTrades)
-                    {
-                        Console.WriteLine("Retrieved Trade: {0}", trade);
-                    }
-                    return new Message(MessageType.Success, retrievedTrades);
+                    return new Message(MessageType.Success, orderBook.GetTrades(tuple.Item2));
                 }
+                return new Message(MessageType.Failure, message.payload);
+            }
+        }
 
-                return new Message(MessageType.Success, new List<Trade>());
+        protected class AdminRetrieveOrdersAction : IAction
+        {
+            public Message Execute(Message message)
+            {
+                Console.WriteLine("Admin Retreive Orders Action: {0}", (Int64)message.payload);
+                OrderBook orderBook;
+                if (orderBooks.TryGetValue((Int64)message.payload, out orderBook))
+                {
+                    List<Order> orders = orderBook.GetActiveOrders();
+                    Console.WriteLine("Retrieved all orders and sending back: Count = {0}", orders.Count());
+                    return new Message(MessageType.Success, orders);
+                }
+                return new Message(MessageType.Failure, message.payload);
             }
 
+        }
+
+        protected class AdminRetrieveTradesAction : IAction
+        {
+            public Message Execute(Message message)
+            {
+                Console.WriteLine("Retreive Trades Action: {0}", (Int64)message.payload);
+                OrderBook orderBook;
+                if (orderBooks.TryGetValue((Int64)message.payload, out orderBook))
+                {
+                    return new Message(MessageType.Success, orderBook.GetRecentTrades());
+                }
+                return new Message(MessageType.Failure, message.payload);
+            }
         }
 
         protected class RetrieveBidAskAction : IAction
@@ -191,35 +201,12 @@ namespace OrderMatchingEngine
                 OrderBook orderBook;
                 if (orderBooks.TryGetValue(productId, out orderBook))
                 {
-                    Console.WriteLine("===================================");
-                    Console.WriteLine("Bid / Ask = {0} / {1}", orderBook.getBidPrice(), orderBook.getAskPrice());
-
-                    return new Message(MessageType.Success, new Tuple<String, String>(orderBook.getBidPrice(), orderBook.getAskPrice()));
+                    return new Message(MessageType.Success, orderBook.GetBidAskPrice());
                 }
 
                 return new Message(MessageType.Failure, productId);
             }
 
         }
-
-        protected class CancelOrderAction : IAction
-        {
-            public Message Execute(Message message)
-            {
-                Console.WriteLine("Cancel Order Action: {0}", (Tuple<Int64, Int64>)message.payload);
-                Tuple<Int64, Int64> tuple = (Tuple<Int64, Int64>)message.payload;
-                OrderBook orderBook;
-                if (orderBooks.TryGetValue(tuple.Item1, out orderBook))
-                {
-                    if (orderBook.cancelOrder(tuple.Item2))
-                    {
-                        return new Message(MessageType.Success, message.payload);
-                    }
-                }
-                return new Message(MessageType.Failure, message.payload);
-            }
-
-        }
     }
-
 }

@@ -26,13 +26,10 @@ namespace OrderMatchingEngine
 
         Dictionary<decimal, List<Order>> sellQueue;
 
-        OrderBook orderBook;
-
-        public Matcher(BlockingCollection<Order> orderQueue, BlockingCollection<Trade> tradeQueue, OrderBook orderBook)
+        public Matcher(BlockingCollection<Order> orderQueue, BlockingCollection<Trade> tradeQueue)
         {
             this.orderQueue = orderQueue;
             this.tradeQueue = tradeQueue;
-            this.orderBook = orderBook;
 
             buyQueue = new Dictionary<decimal, List<Order>>();
             sellQueue = new Dictionary<decimal, List<Order>>();
@@ -56,13 +53,6 @@ namespace OrderMatchingEngine
                     bidPrice = -bidPrice;
                 }
 
-                Console.Write("Offer Prices: ");
-                foreach (decimal key in keys)
-                {
-                    Console.Write("{0} ", key);
-                }
-                Console.WriteLine("; Bid Price: {0}", bidPrice);
-
                 Stack<decimal> offerPrices = new Stack<decimal>(keys);
                 decimal bestPrice = offerPrices.Count > 0 ? offerPrices.Peek() : 0;
 
@@ -71,20 +61,8 @@ namespace OrderMatchingEngine
 
                 if (bid.unfilledQuantity > 0)
                 {
-                    Console.WriteLine("New Order is PARTIALLY MATCHED, add to dictionary");
+                    Console.WriteLine("New Order is not FULLY MATCHED, add to dictionary");
                     AddOrder(bid, -bidPrice);
-                }
-
-                List<decimal> bidPrices = new List<decimal>(buyQueue.Keys);
-                bidPrices.Sort();
-                if (bidPrices.Count > 0) {
-                    orderBook.setBidPrice(Convert.ToString(-bidPrices.First()));
-                }
-
-                List<decimal> askPrices = new List<decimal>(sellQueue.Keys);
-                askPrices.Sort();
-                if (askPrices.Count > 0) {
-                    orderBook.setAskPrice(Convert.ToString(askPrices.First()));
                 }
             }
         }
@@ -107,7 +85,6 @@ namespace OrderMatchingEngine
                 List<Order> existingOffers = new List<Order>();
                 if (offerQueue.TryGetValue(offerPrice, out existingOffers))
                 {
-                    Console.WriteLine("Checking offers at offer price {0}; number of offers {1}", offerPrice, existingOffers.Count);
                     List<Order> offers = new List<Order>(existingOffers);
 
                     foreach (Order offer in offers)

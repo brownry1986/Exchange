@@ -54,36 +54,15 @@ namespace ServiceLibrary
             return trades;
         }
 
-        public Tuple<String, String> GetBidAsk(Int64 productId)
+        public BidAsk GetBidAsk(Int64 productId)
         {
             Message message = new Message(MessageType.RetrieveBidAsk, productId);
             Socket socket = Messenger.SendMessage(message);
             Message response = Messenger.ReceiveMessage(socket);
             Console.WriteLine("Received Response - Message Type: {0}", response.messageType);
-            Tuple<String, String> tuple = (Tuple<String, String>)response.payload;
-            Console.WriteLine("Received Response - Bid/Ask: {0}/{1}", tuple.Item1, tuple.Item2);
-            return tuple;
+            BidAsk bidAsk = (BidAsk)response.payload;
+            Console.WriteLine("Received Response - Bid/Ask: {0}/{1}", bidAsk.bidPrice, bidAsk.askPrice);
+            return bidAsk;
         }
-
-        public void CancelOrder(Int64 productId, Int64 orderNumber)
-        {
-            Message message = new Message(MessageType.CancelOrder, orderNumber);
-            Socket socket = Messenger.SendMessage(message);
-            Message response = Messenger.ReceiveMessage(socket);
-            Console.WriteLine("Received Response - Message Type: {0}", response.messageType);
-            Console.WriteLine("Received Response - Order: {0}", (Int64)response.payload);
-        }
-
-        /*
-        public decimal GetAskPrice()
-        {
-            return OrderBook.getAskPrice();
-        }
-
-        public decimal GetBidPrice()
-        {
-            return OrderBook.getBidPrice();
-        }
-        */
     }
 }

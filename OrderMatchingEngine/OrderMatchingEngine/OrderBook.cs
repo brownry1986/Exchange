@@ -11,25 +11,27 @@ namespace OrderMatchingEngine
     {
         private Int64 productId;
 
-        private Dictionary<Int64, Order> allOrders = new Dictionary<Int64, Order>();
+        private List<Order> allOrders = new List<Order>();
 
         private Dictionary<Int64, List<Order>> ordersByTrader = new Dictionary<Int64, List<Order>>();
 
-        private String bidPrice = "N/A";
+        private List<Trade> allTrades = new List<Trade>();
 
-        private String askPrice = "N/A";
+        private Dictionary<Int64, List<Trade>> tradesByTrader = new Dictionary<Int64, List<Trade>>();
+
+        private int lastTradeReturned = -1;
 
         public OrderBook(Int64 productId)
         {
             this.productId = productId;
         }
 
-        public void addOrder(Order order)
+        public void AddOrder(Order order)
         {
             order.orderNumber = OrderNumberGenerator.getNext();
             order.submitTime = DateTime.Now;
 
-            allOrders.Add(order.orderNumber, order);
+            allOrders.Add(order);
 
             List<Order> orders;
             if (ordersByTrader.TryGetValue(order.traderId, out orders))
@@ -44,45 +46,104 @@ namespace OrderMatchingEngine
             }
         }
 
-        public List<Order> getOrders(Int64 traderId)
+        public List<Order> GetActiveOrders(Int64 traderId)
         {
             List<Order> orders;
             if (ordersByTrader.TryGetValue(traderId, out orders))
             {
-                return orders;
+                List<Order> returnList = new List<Order>();
+                foreach (Order order in orders)
+                {
+                    if (order.unfilledQuantity > 0)
+                    {
+                        returnList.Add(order);
+                    }
+                }
+                return returnList;
             }
             return new List<Order>();
         }
 
-        public Boolean cancelOrder(Int64 orderId)
+        public BidAsk GetBidAskPrice()
         {
-            Order order;
-            if (allOrders.TryGetValue(orderId, out order) && !order.matched)
+            decimal bestBid = 0;
+            decimal bestAsk = decimal.MaxValue;
+            Boolean bidSet = false;
+            Boolean askSet = false;
+
+            foreach (Order order in allOrders)
             {
-                order.cancelled = true;
-                return true;
+                if (order.unfilledQuantity > 0 && order.orderType == OrderType.Limit)
+                {
+                    if (order.buySell == BuySell.Buy && order.price > bestBid)
+                    {
+                        bestBid = order.price;
+                        bidSet = true;
+                    }
+
+                    if (order.buySell == BuySell.Sell && order.price < bestAsk)
+                    {
+                        bestAsk = order.price;
+                        askSet = true;
+                    }
+                }
             }
-            return false;
+
+            return new BidAsk(bidSet ? Convert.ToString(bestBid) : "N/A", askSet ? Convert.ToString(bestAsk) : "N/A");
         }
 
-        public void setBidPrice(String bidPrice)
+        public void AddTrade(Trade trade)
         {
-            this.bidPrice = bidPrice;
+            allTrades.Add(trade);
+
+            List<Trade> trades;
+            if (tradesByTrader.TryGetValue(trade.traderId, out trades))
+            {
+                trades.Add(trade);
+            }
+            else
+            {
+                trades = new List<Trade>();
+                trades.Add(trade);
+                tradesByTrader.Add(trade.traderId, trades);
+            }
         }
 
-        public void setAskPrice(String askPrice)
+        public List<Trade> GetTrades(Int64 traderId)
         {
-            this.askPrice = askPrice;
+            List<Trade> trades;
+            if (tradesByTrader.TryGetValue(traderId, out trades))
+            {
+                return trades;
+            }
+            return new List<Trade>();
         }
 
-        public String getBidPrice()
+        public List<Order> GetActiveOrders()
         {
-            return this.bidPrice;
+            List<Order> activeOrders = new List<Order>();
+            foreach (Order order in allOrders)
+            {
+                if (order.unfilledQuantity > 0)
+                {
+                    activeOrders.Add(order);
+                }
+            }
+            return activeOrders;
         }
 
-        public String getAskPrice()
+        public List<Trade> GetRecentTrades()
         {
-            return this.askPrice;
+            int startIndex = lastTradeReturned + 1;
+            int endIndex = allTrades.Count - 1;
+
+            lastTradeReturned = endIndex;
+
+            if (startIndex <= endIndex)
+            {
+                return allTrades.GetRange(startIndex, endIndex - startIndex);
+            }
+            return new List<Trade>();
         }
     }
 }
