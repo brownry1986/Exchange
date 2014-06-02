@@ -38,8 +38,9 @@ namespace ExchangeClient
             order.filledQuantity = Convert.ToInt64(0);
             order.price = order.orderType == OrderType.Limit ? Convert.ToDecimal(priceValue.Text) : Convert.ToDecimal(0);
 
-            ServiceLibrary.OrderService orderService = new ServiceLibrary.OrderService();
+            ServiceLibrary.IOrderService orderService = new ServiceLibrary.OrderService();
             Order submittedOrder = orderService.SubmitOrder(order);
+
             refreshOrders();
         }
 
@@ -52,13 +53,8 @@ namespace ExchangeClient
         {
             Int64 traderId = Convert.ToInt64(traderBox.SelectedValue);
             Int64 productId = Convert.ToInt64(productBox.SelectedValue);
-            OrderService.IOrderService service = new OrderService.OrderServiceClient();
-            List<Order> orders = service.GetOrders(productId, traderId);
-
-            foreach (Order order in orders)
-            {
-                Console.WriteLine("Received Order: {0}", order.ToString());
-            }
+            ServiceLibrary.IOrderService orderService = new ServiceLibrary.OrderService();
+            List<Order> orders = orderService.GetOrders(productId, traderId);
             orderDataGridView.DataSource = orders;
         }
 
@@ -66,24 +62,17 @@ namespace ExchangeClient
         {
             Int64 traderId = Convert.ToInt64(traderBox.SelectedValue);
             Int64 productId = Convert.ToInt64(productBox.SelectedValue);
-            OrderService.IOrderService service = new OrderService.OrderServiceClient();
-
-            List<Trade> trades = service.GetTrades(productId, traderId);
-
-            foreach (Trade trade in trades)
-            {
-                Console.WriteLine("Received Trade: {0}", trade.ToString());
-            }
-
+            ServiceLibrary.IOrderService orderService = new ServiceLibrary.OrderService();
+            List<Trade> trades = orderService.GetTrades(productId, traderId);
             tradeDataGridView.DataSource = trades;
         }
 
         private void refreshProductInformation()
         {
-            OrderService.IOrderService service = new OrderService.OrderServiceClient();
-            Tuple<String, String> bidAsk = service.GetBidAsk(Convert.ToInt64(productBox.SelectedValue));
-            bidPriceBox.Text = bidAsk.Item1;
-            askPriceBox.Text = bidAsk.Item2;
+            ServiceLibrary.IOrderService orderService = new ServiceLibrary.OrderService();
+            BidAsk bidAsk = orderService.GetBidAsk(Convert.ToInt64(productBox.SelectedValue));
+            bidPriceBox.Text = bidAsk.bidPrice;
+            askPriceBox.Text = bidAsk.askPrice;
         }
 
         private void traderBox_SelectedIndexChanged(object sender, EventArgs e)
