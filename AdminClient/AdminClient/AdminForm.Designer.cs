@@ -62,24 +62,25 @@
             series2.Name = "Series2";
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
-            this.chart1.Size = new System.Drawing.Size(1176, 278);
+            this.chart1.Size = new System.Drawing.Size(1176, 185);
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart1";
             // 
             // chart2
             // 
+            chartArea2.AxisY.IsStartedFromZero = false;
             chartArea2.Name = "ChartArea1";
             this.chart2.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend1";
             this.chart2.Legends.Add(legend2);
-            this.chart2.Location = new System.Drawing.Point(13, 297);
+            this.chart2.Location = new System.Drawing.Point(13, 204);
             this.chart2.Name = "chart2";
             series3.ChartArea = "ChartArea1";
             series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             series3.Legend = "Legend1";
             series3.Name = "Series1";
             this.chart2.Series.Add(series3);
-            this.chart2.Size = new System.Drawing.Size(1176, 322);
+            this.chart2.Size = new System.Drawing.Size(1176, 246);
             this.chart2.TabIndex = 1;
             this.chart2.Text = "chart2";
             // 
@@ -89,13 +90,13 @@
             this.chart3.ChartAreas.Add(chartArea3);
             legend3.Name = "Legend1";
             this.chart3.Legends.Add(legend3);
-            this.chart3.Location = new System.Drawing.Point(12, 625);
+            this.chart3.Location = new System.Drawing.Point(13, 456);
             this.chart3.Name = "chart3";
             series4.ChartArea = "ChartArea1";
             series4.Legend = "Legend1";
             series4.Name = "Series1";
             this.chart3.Series.Add(series4);
-            this.chart3.Size = new System.Drawing.Size(1177, 300);
+            this.chart3.Size = new System.Drawing.Size(1177, 235);
             this.chart3.TabIndex = 2;
             this.chart3.Text = "chart3";
             // 
@@ -103,7 +104,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1201, 998);
+            this.ClientSize = new System.Drawing.Size(1201, 724);
             this.Controls.Add(this.chart3);
             this.Controls.Add(this.chart2);
             this.Controls.Add(this.chart1);

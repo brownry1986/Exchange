@@ -35,6 +35,9 @@
     <Reference Include="ClassLibrary">
       <HintPath>..\..\ClassLibrary\ClassLibrary\bin\Debug\ClassLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceLibrary">
+      <HintPath>..\..\ServiceLibrary\ServiceLibrary\bin\Debug\ServiceLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />

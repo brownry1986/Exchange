@@ -38,8 +38,8 @@ namespace AdminClient
             Dictionary<decimal, long> buyPriceDepth = new Dictionary<decimal, long>();
             Dictionary<decimal, long> sellPriceDepth = new Dictionary<decimal, long>();
 
-            AdminServiceReference.AdminServiceClient serviceClient = new AdminServiceReference.AdminServiceClient();
-            Order[] orders = serviceClient.GetOrders(0);
+            ServiceLibrary.IAdminService adminService = new ServiceLibrary.AdminService();
+            List<Order> orders = adminService.GetOrders(0);
 
             foreach (Order order in orders)
             {
@@ -91,7 +91,8 @@ namespace AdminClient
                 sellSeries.Points.AddXY(price, sellPriceDepth[price]);
             }
 
-            Trade[] trades = serviceClient.GetTrades(0);
+            List<Trade> trades = adminService.GetTrades(0);
+
             decimal totalPrice = 0;
             long totalQuantity = 0;
             foreach (Trade trade in trades)
