@@ -45,8 +45,8 @@ namespace Simulation
                 buyOrder.orderType = OrderType.Limit;
                 buyOrder.productId = 0;
                 buyOrder.traderId = 0;
-                buyOrder.quantity = Convert.ToInt64(SimQtyLog(100, 10));
-                buyOrder.price = Convert.ToDecimal(SimPriceLog(nextprice * .90, 10.0));
+                buyOrder.quantity = Convert.ToInt64(SimQtyLog(500, 10));
+                buyOrder.price = Convert.ToDecimal(SimPriceLog(nextprice * .95, 5.0));
                 buyOrders.Add(buyOrder);
                 SubmitOrder(buyOrder);
 
@@ -56,11 +56,11 @@ namespace Simulation
                 sellOrder.orderType = OrderType.Limit;
                 sellOrder.productId = 0;
                 sellOrder.traderId = 1;
-                sellOrder.quantity = Convert.ToInt64(SimQtyLog(100, 10));
-                sellOrder.price = Convert.ToDecimal(SimPriceLog(nextprice * 1.10, 10.0));
+                sellOrder.quantity = Convert.ToInt64(SimQtyLog(500, 10));
+                sellOrder.price = Convert.ToDecimal(SimPriceLog(nextprice * 1.05, 5.0));
                 sellOrders.Add(sellOrder);
                 SubmitOrder(sellOrder);
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
             }
         }
 
@@ -100,6 +100,7 @@ namespace Simulation
             }
         }
     }
+
     class Simulated
     {
         static void Main()
