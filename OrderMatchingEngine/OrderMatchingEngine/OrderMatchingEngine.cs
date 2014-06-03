@@ -29,6 +29,8 @@ namespace OrderMatchingEngine
 
         static void Main(string[] args)
         {
+            LoadAccountInformation();
+
             foreach (Product product in ProductList.products) 
             {
                 if (product.productId < 0)
@@ -52,6 +54,11 @@ namespace OrderMatchingEngine
             ome.Start();
         }
 
+        protected static void LoadAccountInformation()
+        {
+            // Load traders account information from the agent back into memory
+        }
+
         public class TradeLoader
         {
             public void Start()
@@ -59,6 +66,7 @@ namespace OrderMatchingEngine
                 while(true)
                 {
                     Trade trade = tradeQueue.Take();
+                    UpdateAccountInformation(trade);
 
                     OrderBook orderBook;
                     if (orderBooks.TryGetValue(trade.productId, out orderBook))
@@ -67,6 +75,12 @@ namespace OrderMatchingEngine
                     }
                 }
             }
+
+            protected void UpdateAccountInformation(Trade trade)
+            {
+                // Update the trader's account information based on the executed trade
+            }
+
         }
 
         protected void Start()
@@ -121,6 +135,7 @@ namespace OrderMatchingEngine
                     if (orderBooks.TryGetValue(order.productId, out orderBook))
                     {
                         orderBook.AddOrder(order);
+                        UpdateAccountInformation(order);
                         BlockingCollection<Order> queue = orderQueues[Convert.ToInt32(order.productId)];
                         queue.Add(order);
 
@@ -131,35 +146,45 @@ namespace OrderMatchingEngine
                 return new Message(MessageType.Failure, order);
             }
 
-        }
-
-        static protected Boolean ValidateOrder(Order order)
-        {
-            if (order.quantity <= 0)
+            protected Boolean ValidateOrder(Order order)
             {
-                Console.WriteLine("Order rejected, quantity is less than or equal to zero");
-                return false;
-            }
-
-            if (order.price <= 0)
-            {
-                Console.WriteLine("Order rejected, price is less than or equal to zero");
-                return false;
-            }
-
-            OrderBook orderBook;
-            if (orderBooks.TryGetValue(order.productId, out orderBook))
-            {
-                BidAsk bidAsk = orderBook.GetBidAskPrice();
-                // If there is an existing ask price, a new order cannot have a price more than 10 times that
-                if (bidAsk.askPrice < decimal.MaxValue && order.price > bidAsk.askPrice * 10)
+                if (order.quantity <= 0)
                 {
-                    Console.WriteLine("Order rejected, price is more than 10 times the current Ask Price");
+                    Console.WriteLine("Order rejected, quantity is less than or equal to zero");
                     return false;
                 }
+
+                if (order.price <= 0)
+                {
+                    Console.WriteLine("Order rejected, price is less than or equal to zero");
+                    return false;
+                }
+
+                OrderBook orderBook;
+                if (orderBooks.TryGetValue(order.productId, out orderBook))
+                {
+                    BidAsk bidAsk = orderBook.GetBidAskPrice();
+                    // If there is an existing ask price, a new order cannot have a price more than 10 times that
+                    if (bidAsk.askPrice < decimal.MaxValue && order.price > bidAsk.askPrice * 10)
+                    {
+                        Console.WriteLine("Order rejected, price is more than 10 times the current Ask Price");
+                        return false;
+                    }
+                }
+
+                return ValidateOrderAgainstAccount(order);
             }
 
-            return true;
+            protected Boolean ValidateOrderAgainstAccount(Order order)
+            {
+                // Validate the order against the trader's account information
+                return true;
+            }
+
+            protected void UpdateAccountInformation(Order order)
+            {
+                // Update the trader's account information based on the submitted order
+            }
         }
 
         protected class RetrieveOrdersAction : IAction
