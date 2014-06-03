@@ -182,11 +182,12 @@ namespace OrderMatchingEngine
         {
             public Message Execute(Message message)
             {
-                Console.WriteLine("Retreive Trades Action: {0}", (Int64)message.payload);
+                Console.WriteLine("Retreive Trades Action: {0}", (Tuple<Int64, Int64>)message.payload);
                 OrderBook orderBook;
-                if (orderBooks.TryGetValue((Int64)message.payload, out orderBook))
+                Tuple<Int64, Int64> tuple = (Tuple<Int64, Int64>)message.payload;
+                if (orderBooks.TryGetValue(tuple.Item1, out orderBook))
                 {
-                    return new Message(MessageType.Success, orderBook.GetRecentTrades());
+                    return new Message(MessageType.Success, orderBook.GetRecentTrades(tuple.Item2));
                 }
                 return new Message(MessageType.Failure, message.payload);
             }

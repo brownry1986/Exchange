@@ -20,6 +20,8 @@ namespace AdminClient
 
         protected static decimal previousPrice = 0;
 
+        protected static int lastTradeId = 0;
+
         public AdminForm()
         {
             InitializeComponent();
@@ -91,14 +93,19 @@ namespace AdminClient
                 sellSeries.Points.AddXY(price, sellPriceDepth[price]);
             }
 
-            List<Trade> trades = adminService.GetTrades(0);
+            List<Trade> trades = adminService.GetTrades(0, lastTradeId);
 
-            decimal totalPrice = 0;
             long totalQuantity = 0;
-            foreach (Trade trade in trades)
+            decimal totalPrice = 0;
+
+            if (trades.Count > 0)
             {
-                totalPrice += trade.executionPrice * trade.quantity;
-                totalQuantity += trade.quantity;
+                foreach (Trade trade in trades)
+                {
+                    totalPrice += trade.executionPrice * trade.quantity;
+                    totalQuantity += trade.quantity;
+                }
+                lastTradeId = (int)trades[trades.Count - 1].tradeId;
             }
 
             if (totalQuantity > 0)

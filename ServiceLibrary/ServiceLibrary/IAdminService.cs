@@ -15,6 +15,6 @@ namespace ServiceLibrary
         List<Order> GetOrders(Int64 productId);
 
         [OperationContract]
-        List<Trade> GetTrades(Int64 productId);
+        List<Trade> GetTrades(Int64 productId, Int64 tradeId);
     }
 }

@@ -19,8 +19,6 @@ namespace OrderMatchingEngine
 
         private Dictionary<Int64, List<Trade>> tradesByTrader = new Dictionary<Int64, List<Trade>>();
 
-        private int lastTradeReturned = -1;
-
         public OrderBook(Int64 productId)
         {
             this.productId = productId;
@@ -132,16 +130,16 @@ namespace OrderMatchingEngine
             return activeOrders;
         }
 
-        public List<Trade> GetRecentTrades()
+        public List<Trade> GetRecentTrades(Int64 lastTradeReturned)
         {
-            int startIndex = lastTradeReturned + 1;
+            Int64 startIndex = lastTradeReturned + 1;
             int endIndex = allTrades.Count - 1;
 
             lastTradeReturned = endIndex;
 
             if (startIndex <= endIndex)
             {
-                return allTrades.GetRange(startIndex, endIndex - startIndex);
+                return allTrades.GetRange((int)startIndex, endIndex - (int)startIndex);
             }
             return new List<Trade>();
         }
