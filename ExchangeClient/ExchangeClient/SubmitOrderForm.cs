@@ -71,8 +71,8 @@ namespace ExchangeClient
         {
             ServiceLibrary.IOrderService orderService = new ServiceLibrary.OrderService();
             BidAsk bidAsk = orderService.GetBidAsk(Convert.ToInt64(productBox.SelectedValue));
-            bidPriceBox.Text = bidAsk.bidPrice;
-            askPriceBox.Text = bidAsk.askPrice;
+            bidPriceBox.Text = bidAsk.getBidPriceValue();
+            askPriceBox.Text = bidAsk.getAskPriceValue();
         }
 
         private void traderBox_SelectedIndexChanged(object sender, EventArgs e)

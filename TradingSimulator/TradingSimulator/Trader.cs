@@ -82,9 +82,7 @@ namespace Simulation
                 }
 
                 BidAsk bidAsk = GetBidAsk();
-                double bidPrice = bidAsk.bidPrice.Equals("N/A") ? 0 : Convert.ToDouble(bidAsk.bidPrice);
-                double askPrice = bidAsk.askPrice.Equals("N/A") ? 0 : Convert.ToDouble(bidAsk.askPrice);
-                variance = (askPrice - bidPrice) / 2;
+                variance = Convert.ToDouble(bidAsk.askPrice - bidAsk.bidPrice) / 2;
 
                 Console.WriteLine("Mean: {0}; Variance: {1}", startprice, variance);
             }
@@ -130,10 +128,6 @@ namespace Simulation
             Message response = Messenger.ReceiveMessage(socket);
             BidAsk bidAsk = (BidAsk)response.payload;
             Console.WriteLine("Bid/Ask : {0} / {1}", bidAsk.bidPrice, bidAsk.askPrice);
-            decimal bidPrice = bidAsk.bidPrice.Equals("N/A") ? 0 : Convert.ToDecimal(bidAsk.bidPrice);
-            decimal askPrice = bidAsk.askPrice.Equals("N/A") ? 0 : Convert.ToDecimal(bidAsk.askPrice);
-
-            Console.WriteLine("Mean: {0}; Variance: {1}", (askPrice / 2 + bidPrice / 2), askPrice / 2 - bidPrice /2);
             return bidAsk;
         }
 

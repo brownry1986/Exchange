@@ -11,16 +11,26 @@ namespace ClassLibrary
     [DataContract]
     public class BidAsk
     {
-        public BidAsk(String bidPrice, String askPrice)
+        public BidAsk(decimal bidPrice, decimal askPrice)
         {
             this.bidPrice = bidPrice;
             this.askPrice = askPrice;
         }
 
         [DataMember]
-        public virtual String bidPrice { get; set; }
+        public virtual decimal bidPrice { get; set; }
 
         [DataMember]
-        public virtual String askPrice { get; set; }
+        public virtual decimal askPrice { get; set; }
+
+        public String getBidPriceValue()
+        {
+            return bidPrice == 0 ? "N/A" : Convert.ToString(bidPrice);
+        }
+
+        public String getAskPriceValue()
+        {
+            return askPrice == decimal.MaxValue ? "N/A" : Convert.ToString(askPrice);
+        }
     }
 }

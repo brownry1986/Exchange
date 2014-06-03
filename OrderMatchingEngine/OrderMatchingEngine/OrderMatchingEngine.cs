@@ -115,19 +115,42 @@ namespace OrderMatchingEngine
             {
                 Order order = (Order)message.payload;
                 Console.WriteLine("Submit Order Action: {0}", order);
-                OrderBook orderBook;
-                if (orderBooks.TryGetValue(order.productId, out orderBook))
+                if (ValidateOrder(order))
                 {
-                    orderBook.AddOrder(order);
-                    BlockingCollection<Order> queue = orderQueues[Convert.ToInt32(order.productId)];
-                    queue.Add(order);
+                    OrderBook orderBook;
+                    if (orderBooks.TryGetValue(order.productId, out orderBook))
+                    {
+                        orderBook.AddOrder(order);
+                        BlockingCollection<Order> queue = orderQueues[Convert.ToInt32(order.productId)];
+                        queue.Add(order);
 
-                    return new Message(MessageType.Success, order);
+                        return new Message(MessageType.Success, order);
+                    }
                 }
 
                 return new Message(MessageType.Failure, order);
             }
 
+        }
+
+        static protected Boolean ValidateOrder(Order order)
+        {
+            if (order.quantity <= 0)
+                return false;
+            if (order.price <= 0)
+                return false;
+
+            OrderBook orderBook;
+            if (orderBooks.TryGetValue(order.productId, out orderBook))
+            {
+                BidAsk bidAsk = orderBook.GetBidAskPrice();
+                if (order.price > bidAsk.askPrice * 10)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         protected class RetrieveOrdersAction : IAction

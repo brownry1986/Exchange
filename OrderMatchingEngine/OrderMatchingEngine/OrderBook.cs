@@ -66,8 +66,6 @@ namespace OrderMatchingEngine
         {
             decimal bestBid = 0;
             decimal bestAsk = decimal.MaxValue;
-            Boolean bidSet = false;
-            Boolean askSet = false;
 
             foreach (Order order in allOrders)
             {
@@ -76,18 +74,16 @@ namespace OrderMatchingEngine
                     if (order.buySell == BuySell.Buy && order.price > bestBid)
                     {
                         bestBid = order.price;
-                        bidSet = true;
                     }
 
                     if (order.buySell == BuySell.Sell && order.price < bestAsk)
                     {
                         bestAsk = order.price;
-                        askSet = true;
                     }
                 }
             }
 
-            return new BidAsk(bidSet ? Convert.ToString(bestBid) : "N/A", askSet ? Convert.ToString(bestAsk) : "N/A");
+            return new BidAsk(bestBid, bestAsk);
         }
 
         public void AddTrade(Trade trade)
