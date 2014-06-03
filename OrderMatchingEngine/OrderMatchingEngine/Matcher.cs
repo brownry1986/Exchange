@@ -59,7 +59,8 @@ namespace OrderMatchingEngine
                 Console.WriteLine("Attempt to Match: Bid Price = {0}, Bid Quantity = {1}, Best Offer Price = {2}", bidPrice, quantity, (offerPrices.Count > 0 ? offerPrices.Peek() : 0));
                 MatchOrders(bid, offerPrices, bidPrice);
 
-                if (bid.unfilledQuantity > 0)
+                // If there is unfilled quantity add the order to the order book unless it is a market order
+                if (bid.unfilledQuantity > 0 && bid.orderType != OrderType.Market)
                 {
                     Console.WriteLine("New Order is not FULLY MATCHED, add to dictionary");
                     AddOrder(bid, -bidPrice);
