@@ -136,16 +136,25 @@ namespace OrderMatchingEngine
         static protected Boolean ValidateOrder(Order order)
         {
             if (order.quantity <= 0)
+            {
+                Console.WriteLine("Order rejected, quantity is less than or equal to zero");
                 return false;
+            }
+
             if (order.price <= 0)
+            {
+                Console.WriteLine("Order rejected, price is less than or equal to zero");
                 return false;
+            }
 
             OrderBook orderBook;
             if (orderBooks.TryGetValue(order.productId, out orderBook))
             {
                 BidAsk bidAsk = orderBook.GetBidAskPrice();
-                if (order.price > bidAsk.askPrice * 10)
+                // If there is an existing ask price, a new order cannot have a price more than 10 times that
+                if (bidAsk.askPrice < decimal.MaxValue && order.price > bidAsk.askPrice * 10)
                 {
+                    Console.WriteLine("Order rejected, price is more than 10 times the current Ask Price");
                     return false;
                 }
             }
