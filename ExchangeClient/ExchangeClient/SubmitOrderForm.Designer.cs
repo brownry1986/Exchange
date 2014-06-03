@@ -300,6 +300,7 @@
             this.orderTypeBox.Name = "orderTypeBox";
             this.orderTypeBox.Size = new System.Drawing.Size(121, 21);
             this.orderTypeBox.TabIndex = 3;
+            this.orderTypeBox.SelectedIndexChanged += new System.EventHandler(this.orderTypeBox_SelectedIndexChanged);
             // 
             // trader
             // 

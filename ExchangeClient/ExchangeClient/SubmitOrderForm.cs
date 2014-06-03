@@ -99,6 +99,20 @@ namespace ExchangeClient
             SubmitOrderForm.refresh = display;
         }
 
+        private void orderTypeBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.orderTypeBox.SelectedIndex == 0)
+            {
+                this.priceLabel.Visible = false;
+                this.priceValue.Visible = false;
+            }
+            else
+            {
+                this.priceLabel.Visible = true;
+                this.priceValue.Visible = true;
+            }
+        }
+
         private void form_Close(object sender, EventArgs e)
         {
             SubmitOrderForm.active = false;
