@@ -475,8 +475,8 @@
             this.Controls.Add(this.productGroupBox);
             this.Controls.Add(this.traderBox);
             this.Controls.Add(this.trader);
-            this.Name = "SubmitOrderForm";
-            this.Text = "Exchange";
+            this.Name = "ExchangeClient";
+            this.Text = "Exchange Client";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.form_Close);
             ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tradeBindingSource)).EndInit();
