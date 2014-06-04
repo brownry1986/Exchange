@@ -86,7 +86,8 @@ namespace ExchangeClient
         {
             Boolean display = (productBox.SelectedIndex > 0);
             productGroupBox.Visible = display;
-            orderGroupBox.Visible = display;
+            submitOrderGroupBox.Visible = display;
+            activeOrderGroupBox.Visible = display;
             executedTradesGroupBox.Visible = display;
 
             if (display)

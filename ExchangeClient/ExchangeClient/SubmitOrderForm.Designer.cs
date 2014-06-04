@@ -48,7 +48,6 @@
             this.productBox = new System.Windows.Forms.ComboBox();
             this.product = new System.Windows.Forms.Label();
             this.buySellBox = new System.Windows.Forms.ComboBox();
-            this.orderGroupBox = new System.Windows.Forms.GroupBox();
             this.activeOrderGroupBox = new System.Windows.Forms.GroupBox();
             this.submitOrderGroupBox = new System.Windows.Forms.GroupBox();
             this.orderType = new System.Windows.Forms.Label();
@@ -75,7 +74,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tradeBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.orderDataGridView)).BeginInit();
-            this.orderGroupBox.SuspendLayout();
             this.activeOrderGroupBox.SuspendLayout();
             this.submitOrderGroupBox.SuspendLayout();
             this.productGroupBox.SuspendLayout();
@@ -86,7 +84,7 @@
             // quantityLabel
             // 
             this.quantityLabel.AutoSize = true;
-            this.quantityLabel.Location = new System.Drawing.Point(428, 28);
+            this.quantityLabel.Location = new System.Drawing.Point(410, 28);
             this.quantityLabel.Name = "quantityLabel";
             this.quantityLabel.Size = new System.Drawing.Size(46, 13);
             this.quantityLabel.TabIndex = 1;
@@ -95,7 +93,7 @@
             // priceLabel
             // 
             this.priceLabel.AutoSize = true;
-            this.priceLabel.Location = new System.Drawing.Point(600, 28);
+            this.priceLabel.Location = new System.Drawing.Point(577, 28);
             this.priceLabel.Name = "priceLabel";
             this.priceLabel.Size = new System.Drawing.Size(31, 13);
             this.priceLabel.TabIndex = 2;
@@ -103,7 +101,7 @@
             // 
             // submitButton
             // 
-            this.submitButton.Location = new System.Drawing.Point(23, 65);
+            this.submitButton.Location = new System.Drawing.Point(733, 23);
             this.submitButton.Name = "submitButton";
             this.submitButton.Size = new System.Drawing.Size(75, 23);
             this.submitButton.TabIndex = 7;
@@ -113,14 +111,14 @@
             // 
             // quantityValue
             // 
-            this.quantityValue.Location = new System.Drawing.Point(480, 25);
+            this.quantityValue.Location = new System.Drawing.Point(462, 25);
             this.quantityValue.Name = "quantityValue";
             this.quantityValue.Size = new System.Drawing.Size(100, 20);
             this.quantityValue.TabIndex = 5;
             // 
             // priceValue
             // 
-            this.priceValue.Location = new System.Drawing.Point(637, 25);
+            this.priceValue.Location = new System.Drawing.Point(614, 25);
             this.priceValue.Name = "priceValue";
             this.priceValue.Size = new System.Drawing.Size(100, 20);
             this.priceValue.TabIndex = 6;
@@ -148,12 +146,12 @@
             this.submitTimeDataGridViewTextBoxColumn});
             this.orderDataGridView.DataSource = this.orderBindingSource;
             this.orderDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.orderDataGridView.Enabled = false;
             this.orderDataGridView.Location = new System.Drawing.Point(23, 30);
             this.orderDataGridView.MultiSelect = false;
             this.orderDataGridView.Name = "orderDataGridView";
             this.orderDataGridView.ReadOnly = true;
-            this.orderDataGridView.Size = new System.Drawing.Size(949, 126);
+            this.orderDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.orderDataGridView.Size = new System.Drawing.Size(770, 183);
             this.orderDataGridView.TabIndex = 100;
             // 
             // orderTypeDataGridViewTextBoxColumn
@@ -202,7 +200,7 @@
             // buySell
             // 
             this.buySell.AutoSize = true;
-            this.buySell.Location = new System.Drawing.Point(227, 28);
+            this.buySell.Location = new System.Drawing.Point(222, 28);
             this.buySell.Name = "buySell";
             this.buySell.Size = new System.Drawing.Size(47, 13);
             this.buySell.TabIndex = 11;
@@ -236,32 +234,21 @@
             this.buySellBox.Items.AddRange(new object[] {
             ClassLibrary.BuySell.Buy,
             ClassLibrary.BuySell.Sell});
-            this.buySellBox.Location = new System.Drawing.Point(280, 25);
+            this.buySellBox.Location = new System.Drawing.Point(275, 25);
             this.buySellBox.Name = "buySellBox";
             this.buySellBox.Size = new System.Drawing.Size(121, 21);
             this.buySellBox.TabIndex = 4;
             // 
-            // orderGroupBox
-            // 
-            this.orderGroupBox.Controls.Add(this.activeOrderGroupBox);
-            this.orderGroupBox.Controls.Add(this.submitOrderGroupBox);
-            this.orderGroupBox.Location = new System.Drawing.Point(16, 166);
-            this.orderGroupBox.Name = "orderGroupBox";
-            this.orderGroupBox.Size = new System.Drawing.Size(1031, 334);
-            this.orderGroupBox.TabIndex = 15;
-            this.orderGroupBox.TabStop = false;
-            this.orderGroupBox.Text = "Order Information";
-            this.orderGroupBox.Visible = false;
-            // 
             // activeOrderGroupBox
             // 
             this.activeOrderGroupBox.Controls.Add(this.orderDataGridView);
-            this.activeOrderGroupBox.Location = new System.Drawing.Point(21, 154);
+            this.activeOrderGroupBox.Location = new System.Drawing.Point(16, 235);
             this.activeOrderGroupBox.Name = "activeOrderGroupBox";
-            this.activeOrderGroupBox.Size = new System.Drawing.Size(991, 168);
+            this.activeOrderGroupBox.Size = new System.Drawing.Size(824, 224);
             this.activeOrderGroupBox.TabIndex = 18;
             this.activeOrderGroupBox.TabStop = false;
             this.activeOrderGroupBox.Text = "Active Orders";
+            this.activeOrderGroupBox.Visible = false;
             // 
             // submitOrderGroupBox
             // 
@@ -274,12 +261,13 @@
             this.submitOrderGroupBox.Controls.Add(this.buySell);
             this.submitOrderGroupBox.Controls.Add(this.quantityLabel);
             this.submitOrderGroupBox.Controls.Add(this.priceLabel);
-            this.submitOrderGroupBox.Location = new System.Drawing.Point(21, 28);
+            this.submitOrderGroupBox.Location = new System.Drawing.Point(16, 166);
             this.submitOrderGroupBox.Name = "submitOrderGroupBox";
-            this.submitOrderGroupBox.Size = new System.Drawing.Size(991, 105);
+            this.submitOrderGroupBox.Size = new System.Drawing.Size(824, 63);
             this.submitOrderGroupBox.TabIndex = 17;
             this.submitOrderGroupBox.TabStop = false;
             this.submitOrderGroupBox.Text = "Submit Order";
+            this.submitOrderGroupBox.Visible = false;
             // 
             // orderType
             // 
@@ -331,7 +319,7 @@
             this.productGroupBox.Controls.Add(this.bidPriceBox);
             this.productGroupBox.Location = new System.Drawing.Point(16, 99);
             this.productGroupBox.Name = "productGroupBox";
-            this.productGroupBox.Size = new System.Drawing.Size(1031, 61);
+            this.productGroupBox.Size = new System.Drawing.Size(824, 61);
             this.productGroupBox.TabIndex = 18;
             this.productGroupBox.TabStop = false;
             this.productGroupBox.Text = "Product Information";
@@ -376,9 +364,9 @@
             // executedTradesGroupBox
             // 
             this.executedTradesGroupBox.Controls.Add(this.tradeDataGridView);
-            this.executedTradesGroupBox.Location = new System.Drawing.Point(16, 519);
+            this.executedTradesGroupBox.Location = new System.Drawing.Point(16, 465);
             this.executedTradesGroupBox.Name = "executedTradesGroupBox";
-            this.executedTradesGroupBox.Size = new System.Drawing.Size(1031, 219);
+            this.executedTradesGroupBox.Size = new System.Drawing.Size(824, 201);
             this.executedTradesGroupBox.TabIndex = 19;
             this.executedTradesGroupBox.TabStop = false;
             this.executedTradesGroupBox.Text = "Executed Trades";
@@ -399,12 +387,12 @@
             this.feeAmountDataGridViewTextBoxColumn});
             this.tradeDataGridView.DataSource = this.tradeBindingSource;
             this.tradeDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.tradeDataGridView.Enabled = false;
             this.tradeDataGridView.Location = new System.Drawing.Point(21, 19);
             this.tradeDataGridView.MultiSelect = false;
             this.tradeDataGridView.Name = "tradeDataGridView";
             this.tradeDataGridView.ReadOnly = true;
-            this.tradeDataGridView.Size = new System.Drawing.Size(991, 194);
+            this.tradeDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tradeDataGridView.Size = new System.Drawing.Size(772, 171);
             this.tradeDataGridView.TabIndex = 100;
             // 
             // buySellDataGridViewTextBoxColumn2
@@ -478,21 +466,21 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1059, 750);
+            this.ClientSize = new System.Drawing.Size(856, 677);
+            this.Controls.Add(this.submitOrderGroupBox);
+            this.Controls.Add(this.activeOrderGroupBox);
             this.Controls.Add(this.product);
             this.Controls.Add(this.productBox);
             this.Controls.Add(this.executedTradesGroupBox);
             this.Controls.Add(this.productGroupBox);
             this.Controls.Add(this.traderBox);
             this.Controls.Add(this.trader);
-            this.Controls.Add(this.orderGroupBox);
             this.Name = "SubmitOrderForm";
             this.Text = "Exchange";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.form_Close);
             ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tradeBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.orderDataGridView)).EndInit();
-            this.orderGroupBox.ResumeLayout(false);
             this.activeOrderGroupBox.ResumeLayout(false);
             this.submitOrderGroupBox.ResumeLayout(false);
             this.submitOrderGroupBox.PerformLayout();
@@ -519,7 +507,6 @@
         private System.Windows.Forms.ComboBox productBox;
         private System.Windows.Forms.Label product;
         private System.Windows.Forms.ComboBox buySellBox;
-        private System.Windows.Forms.GroupBox orderGroupBox;
         private System.Windows.Forms.ComboBox orderTypeBox;
         private System.Windows.Forms.Label orderType;
         private System.Windows.Forms.Label trader;
