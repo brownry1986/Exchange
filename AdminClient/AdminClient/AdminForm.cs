@@ -42,7 +42,11 @@ namespace AdminClient
 
             ServiceLibrary.IAdminService adminService = new ServiceLibrary.AdminService();
             List<Order> orders = adminService.GetOrders(0);
-
+            
+            long buyOrders = 0;
+            long buyQuantity = 0;
+            long sellOrders = 0;
+            long sellQuantity = 0;
             foreach (Order order in orders)
             {
                 long quantity = order.unfilledQuantity;
@@ -52,6 +56,9 @@ namespace AdminClient
                 {
                     if (order.buySell == BuySell.Buy)
                     {
+                        buyOrders++;
+                        buyQuantity += quantity;
+
                         long depth;
                         if (buyPriceDepth.TryGetValue(price, out depth))
                         {
@@ -64,6 +71,9 @@ namespace AdminClient
                     }
                     else
                     {
+                        sellOrders++;
+                        sellQuantity += quantity;
+
                         long depth;
                         if (sellPriceDepth.TryGetValue(price, out depth))
                         {
@@ -76,6 +86,11 @@ namespace AdminClient
                     }
                 }
             }
+
+            this.buyOrdersBox.Text = Convert.ToString(buyOrders);
+            this.buyQuantityBox.Text = Convert.ToString(buyQuantity);
+            this.sellOrdersBox.Text = Convert.ToString(sellOrders);
+            this.sellQuantityBox.Text = Convert.ToString(sellQuantity);
 
             System.Windows.Forms.DataVisualization.Charting.Series buySeries = chart1.Series[0];
             System.Windows.Forms.DataVisualization.Charting.Series sellSeries = chart1.Series[1];
@@ -95,7 +110,7 @@ namespace AdminClient
 
             List<Trade> trades = adminService.GetTrades(0, lastTradeId);
 
-            long totalQuantity = 0;
+            long tradeQuantity = 0;
             decimal totalPrice = 0;
 
             if (trades.Count > 0)
@@ -103,14 +118,14 @@ namespace AdminClient
                 foreach (Trade trade in trades)
                 {
                     totalPrice += trade.executionPrice * trade.quantity;
-                    totalQuantity += trade.quantity;
+                    tradeQuantity += trade.quantity;
                 }
                 lastTradeId = (int)trades[trades.Count - 1].tradeId;
             }
 
-            if (totalQuantity > 0)
+            if (tradeQuantity > 0)
             {
-                previousPrice = totalPrice / totalQuantity;
+                previousPrice = totalPrice / tradeQuantity;
             }
 
             if (previousPrice > 0)
@@ -119,7 +134,7 @@ namespace AdminClient
                 priceSeries.Points.AddXY(time, previousPrice);
 
                 System.Windows.Forms.DataVisualization.Charting.Series volumeSeries = chart3.Series[0];
-                volumeSeries.Points.AddXY(time++, totalQuantity);
+                volumeSeries.Points.AddXY(time++, tradeQuantity);
             }
         }
 
