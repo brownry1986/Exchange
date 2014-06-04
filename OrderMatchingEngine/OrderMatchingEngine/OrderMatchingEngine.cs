@@ -154,7 +154,7 @@ namespace OrderMatchingEngine
                     return false;
                 }
 
-                if (order.price <= 0)
+                if (order.orderType == OrderType.Limit && order.price <= 0)
                 {
                     Console.WriteLine("Order rejected, price is less than or equal to zero");
                     return false;
