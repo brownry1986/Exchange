@@ -87,9 +87,9 @@ namespace AdminClient
                 }
             }
 
-            this.buyOrdersBox.Text = Convert.ToString(buyOrders);
+            this.buyCountBox.Text = Convert.ToString(buyOrders);
             this.buyQuantityBox.Text = Convert.ToString(buyQuantity);
-            this.sellOrdersBox.Text = Convert.ToString(sellOrders);
+            this.sellCountBox.Text = Convert.ToString(sellOrders);
             this.sellQuantityBox.Text = Convert.ToString(sellQuantity);
 
             System.Windows.Forms.DataVisualization.Charting.Series buySeries = chart1.Series[0];
@@ -134,7 +134,7 @@ namespace AdminClient
                 priceSeries.Points.AddXY(time, previousPrice);
 
                 System.Windows.Forms.DataVisualization.Charting.Series volumeSeries = chart3.Series[0];
-                volumeSeries.Points.AddXY(time++, tradeQuantity);
+                volumeSeries.Points.AddXY(time++, tradeQuantity / 2);
             }
         }
 
