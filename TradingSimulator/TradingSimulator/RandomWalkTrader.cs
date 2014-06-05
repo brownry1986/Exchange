@@ -44,7 +44,7 @@ namespace TradingSimulator
                 // Create new sell order
                 SubmitOrder(BuySell.Sell, SimulatePrice(nextPrice * (1 + distribution), variance), SimulateQuantity(200, 10));
 
-                List<Trade> trades = GetTrades(lastTradeId);
+                List<Trade> trades = GetTrades(10);
                 if (trades.Count > 1)
                 {
                     lastTradeId = (int)trades.Last().tradeId;

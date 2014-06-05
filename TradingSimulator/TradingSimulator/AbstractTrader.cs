@@ -60,9 +60,9 @@ namespace TradingSimulator
             return bidAsk;
         }
 
-        public List<Trade> GetTrades(int lastTradeId)
+        public List<Trade> GetTrades(int numberOfTrades)
         {
-            Message message = new Message(MessageType.AdminRetrieveTrades, new Tuple<Int64, Int64>(0, lastTradeId));
+            Message message = new Message(MessageType.AdminRetrieveHistoricalTrades, new Tuple<Int64, Int64>(0, numberOfTrades));
             Socket socket = Messenger.SendMessage(message);
             Message response = Messenger.ReceiveMessage(socket);
             return (List<Trade>)response.payload;

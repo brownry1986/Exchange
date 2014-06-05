@@ -106,6 +106,8 @@ namespace OrderMatchingEngine
                     return new AdminRetrieveOrdersAction().Execute(message);
                 case MessageType.AdminRetrieveTrades:
                     return new AdminRetrieveTradesAction().Execute(message);
+                case MessageType.AdminRetrieveHistoricalTrades:
+                    return new AdminRetrieveHistoricalTradesAction().Execute(message);
             }
 
             return new Message(MessageType.Failure, 0);
@@ -245,6 +247,21 @@ namespace OrderMatchingEngine
                 if (orderBooks.TryGetValue(tuple.Item1, out orderBook))
                 {
                     return new Message(MessageType.Success, orderBook.GetRecentTrades(tuple.Item2));
+                }
+                return new Message(MessageType.Failure, message.payload);
+            }
+        }
+
+        protected class AdminRetrieveHistoricalTradesAction : IAction
+        {
+            public Message Execute(Message message)
+            {
+                Console.WriteLine("Retreive Trades Action: {0}", (Tuple<Int64, Int64>)message.payload);
+                OrderBook orderBook;
+                Tuple<Int64, Int64> tuple = (Tuple<Int64, Int64>)message.payload;
+                if (orderBooks.TryGetValue(tuple.Item1, out orderBook))
+                {
+                    return new Message(MessageType.Success, orderBook.GetHistoricalTrades(tuple.Item2));
                 }
                 return new Message(MessageType.Failure, message.payload);
             }

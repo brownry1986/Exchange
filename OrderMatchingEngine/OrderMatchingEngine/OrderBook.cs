@@ -139,5 +139,17 @@ namespace OrderMatchingEngine
             }
             return new List<Trade>();
         }
+
+        public List<Trade> GetHistoricalTrades(Int64 numberOfTrades)
+        {
+            int endIndex = allTrades.Count - 1;
+            Int64 startIndex = Math.Max(0, endIndex - numberOfTrades);
+
+            if (startIndex <= endIndex)
+            {
+                return allTrades.GetRange((int)startIndex, endIndex - (int)startIndex);
+            }
+            return new List<Trade>();
+        }
     }
 }
