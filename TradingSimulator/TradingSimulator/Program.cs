@@ -1,59 +1,32 @@
 ﻿using System;
 using System.Text;
 using System.Threading;
+using System.Collections.Generic;
 
-namespace Trader
+namespace TradingSimulator
 {
-    class PriceSim
+    public class Simulator
     {
-        public double SimulateAsset(double so, double mu, double sigma, double tau, double delta, Rand g)
+        static void Main(String[] args)
         {
-            double s = so;
-            double nsteps = tau;
-            for (int i = 0; i < (int)nsteps; i++)  //we could loop inside here for the price, I did it outside, but could easily remove
+            if (args.Length != 1)
             {
-                double r = g.Gauss(0.0, 1.0); //generate a gaussian random number mean 0 std. dev 1.0
-                s = s * (1.0 + mu * delta + sigma * r * Math.Sqrt(delta)); //notice we are adjusting annual mu and sigma for delta (i.e. time)
+                Console.WriteLine("Invalid arguments");
+                return;
             }
-            return s;
+
+            GetTradingStrategy(args[0]).GeneratorOrders();
         }
 
-    }
-
-    class Rand : Random
-    {
-        private double v1;
-        private double v2;
-        private double r;
-
-        public double Gauss(double mu, double sigma)
+        private static ITrader GetTradingStrategy(String strategy)
         {
-            while (true)
+            switch (strategy)
             {
-                v1 = NextDouble()*2.0-1.0;
-                v2 = NextDouble()*2.0-1.0;
-                r = (v1 * v1) + (v2 * v2);
-                if (r<1)
-                    break;
+                case "SimpleDistributed":
+                    return new SimpleDistributedTrader();
+                default :
+                    return new SimpleDistributedTrader();
             }
-            return mu + sigma * Math.Sqrt(-2.0 * Math.Log(r) / r) * v1;
-        }
-
-
-    }
-    class Pricing
-    {
-        static void Testing1()
-        {
-            Rand gaussiannumber = new Rand();
-            PriceSim testing = new PriceSim();
-            double updatedprice = 100.0;  //Starting price
-
-            for (int i = 0; i < 10; i++) //let the price walk for 10 days
-            {
-                updatedprice = testing.SimulateAsset(updatedprice, .10, .3, 1, 1.0/252.0, gaussiannumber);                
-            }
-            Console.WriteLine(updatedprice); //output price after ten days
         }
     }
 }
