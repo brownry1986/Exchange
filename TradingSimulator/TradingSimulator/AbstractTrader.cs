@@ -67,5 +67,34 @@ namespace TradingSimulator
             Message response = Messenger.ReceiveMessage(socket);
             return (List<Trade>)response.payload;
         }
+
+        protected double CalculateHistoricalMean(List<Trade> trades)
+        {
+            double totalAmount = 0;
+            int totalQuantity = 0;
+
+            foreach (Trade trade in trades)
+            {
+                totalAmount += Convert.ToDouble(trade.executionPrice) * trade.quantity;
+                totalQuantity += (int)trade.quantity;
+            }
+
+            return totalAmount / totalQuantity;
+        }
+
+        protected double CalculateHistoricalVariance(List<Trade> trades)
+        {
+            double sum = 0;
+            double sumSquare = 0;
+            int count = 0;
+
+            foreach (Trade trade in trades)
+            {
+                count++;
+                sum += Convert.ToDouble(trade.executionPrice);
+                sumSquare += Math.Pow(Convert.ToDouble(trade.executionPrice), 2);
+            }
+            return (sumSquare - (Math.Pow(sum, 2)) / count) / (count - 1);
+        }
     }
 }

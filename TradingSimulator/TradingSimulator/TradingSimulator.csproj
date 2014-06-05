@@ -49,6 +49,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rand.cs" />
+    <Compile Include="RandomWalkTrader.cs" />
     <Compile Include="SimpleDistributedTrader.cs" />
   </ItemGroup>
   <ItemGroup>

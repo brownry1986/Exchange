@@ -24,7 +24,9 @@ namespace TradingSimulator
             {
                 case "SimpleDistributed":
                     return new SimpleDistributedTrader();
-                default :
+                case "RandomWalk":
+                    return new RandomWalkTrader();
+                default:
                     return new SimpleDistributedTrader();
             }
         }
