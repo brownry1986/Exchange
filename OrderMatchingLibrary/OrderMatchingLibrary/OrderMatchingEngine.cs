@@ -27,15 +27,15 @@ namespace OrderMatchingLibrary
 
         static BlockingCollection<Trade> tradeQueue = new BlockingCollection<Trade>();
 
-        List<Thread> matcherThreads;
+        static List<Thread> matcherThreads;
 
-        Thread tradeLoadThread;
+        static Thread tradeLoadThread;
 
-        Thread listenerThread;
+        static Thread listenerThread;
 
         public static Boolean running = true;
 
-        public static TradingMode tradingMode = TradingMode.Active;
+        public static TradingMode tradingMode = TradingMode.Passive;
 
         protected static void LoadAccountInformation()
         {
@@ -115,6 +115,8 @@ namespace OrderMatchingLibrary
                     return new AdminRetrieveTradesAction().Execute(message);
                 case MessageType.AdminRetrieveHistoricalTrades:
                     return new AdminRetrieveHistoricalTradesAction().Execute(message);
+                case MessageType.AdminSwitchTradingMode:
+                    return new AdminSwitchTradingModeAction().Execute(message);
             }
 
             return new Message(MessageType.Failure, 0);
@@ -299,6 +301,32 @@ namespace OrderMatchingLibrary
                 return new Message(MessageType.Failure, productId);
             }
 
+        }
+
+        protected class AdminSwitchTradingModeAction : IAction
+        {
+            public Message Execute(Message message)
+            {
+                if (OrderMatchingEngine.tradingMode == TradingMode.Passive)
+                {
+                    OrderMatchingEngine.tradingMode = TradingMode.Startup;
+                }
+                else if (OrderMatchingEngine.tradingMode == TradingMode.Startup)
+                {
+                    OrderMatchingEngine.tradingMode = TradingMode.Active;
+                }
+                else if (OrderMatchingEngine.tradingMode == TradingMode.Active)
+                {
+                    OrderMatchingEngine.tradingMode = TradingMode.Passive;
+                }
+
+                foreach (Thread matcherThread in matcherThreads)
+                {
+                    matcherThread.Interrupt();
+                }
+
+                return new Message(MessageType.Success, OrderMatchingEngine.tradingMode);
+            }
         }
 
         public class TradeLoader
