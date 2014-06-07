@@ -26,6 +26,8 @@ namespace OrderMatchingLibrary
 
         Dictionary<decimal, List<Order>> sellQueue;
 
+        Boolean startupComplete;
+
         public Matcher(BlockingCollection<Order> orderQueue, BlockingCollection<Trade> tradeQueue)
         {
             this.orderQueue = orderQueue;
@@ -39,43 +41,116 @@ namespace OrderMatchingLibrary
         {
             while (OrderMatchingEngine.running)
             {
-                if (OrderMatchingEngine.tradingMode == TradingMode.Startup)
+                try
                 {
-                    // Implement startup procedure
+                    if (OrderMatchingEngine.tradingMode == TradingMode.Startup)
+                    {
+                        if (startupComplete)
+                        {
+                            Thread.Sleep(1000);
+                        }
+                        else
+                        {
+                            startupComplete = true;
+                            StartupMode();
+                        }
+                    }
+                    else
+                    {
+                        startupComplete = false;
+                        MatchingMode();
+                    }
                 }
-                else
+                catch (ThreadInterruptedException ex)
                 {
-                    try
-                    {
-                        Order bid = orderQueue.Take();
-                        Console.WriteLine("Matcher got order: {0}", bid.ToString());
-
-                        if (OrderMatchingEngine.tradingMode == TradingMode.Active)
-                        {
-                            MatchOrder(bid);
-                        }
-
-                        // If there is unfilled quantity add the order to the order book unless it is a market order
-                        if (bid.unfilledQuantity > 0 && bid.orderType != OrderType.Market)
-                        {
-                            Console.WriteLine("New Order is not FULLY MATCHED, add to dictionary");
-                            AddOrder(bid);
-                        }
-                    }
-                    catch (ThreadInterruptedException ex)
-                    {
-                        Console.WriteLine("Thread interrupted, stopping");
-                    }
+                    Console.WriteLine("Thread interrupted, stopping");
                 }
             }
         }
 
-        public void MatchOrder(Order bid)
+        private void StartupMode()
+        {
+            List<Trade> trades = StartupMatching();
+
+            if (trades.Count > 0)
+            {
+                decimal matchedPrice = trades.Last().executionPrice;
+                Console.WriteLine("In Startup, matched {0} trades, median price = {1}", trades.Count, matchedPrice);
+                foreach (Trade trade in trades)
+                {
+                    trade.executionPrice = matchedPrice;
+                    trade.feeAmount = matchedPrice * Convert.ToDecimal(trade.quantity) * Convert.ToDecimal(.001);
+                    tradeQueue.Add(trade);
+                }
+            }
+        }
+
+        private void MatchingMode()
+        {
+            Order bid = orderQueue.Take();
+            Console.WriteLine("Matcher got order: {0}", bid.ToString());
+
+            if (OrderMatchingEngine.tradingMode == TradingMode.Active)
+            {
+                List<Trade> trades = MatchOrder(bid);
+                foreach(Trade trade in trades)
+                {
+                    tradeQueue.Add(trade);
+                }
+            }
+
+            // If there is unfilled quantity add the order to the order book unless it is a market order
+            if (bid.unfilledQuantity > 0 && bid.orderType != OrderType.Market)
+            {
+                Console.WriteLine("New Order is not FULLY MATCHED, add to dictionary");
+                AddOrder(bid);
+            }
+        }
+
+        private List<Trade> StartupMatching()
+        {
+            List<decimal> keys = new List<decimal>(buyQueue.Keys);
+            keys.Sort();
+            keys.Reverse();
+            List<Trade> allMatchedTrades = new List<Trade>();
+
+            foreach (decimal key in keys)
+            {
+                List<Order> bids;
+                if (buyQueue.TryGetValue(key, out bids))
+                {
+                    List<Order> matchingBids = new List<Order>(bids);
+
+                    foreach (Order bid in matchingBids)
+                    {
+                        List<Trade> matchedTrades = MatchOrder(bid);
+                        if (bid.unfilledQuantity == 0)
+                        {
+                            bids.Remove(bid);
+                            if (bids.Count == 0)
+                            {
+                                buyQueue.Remove(key);
+                            }
+                        }
+
+                        if (matchedTrades.Count == 0)
+                        {
+                            return allMatchedTrades;
+                        }
+                        allMatchedTrades.AddRange(matchedTrades);
+                    }
+                }
+            }
+            return allMatchedTrades;
+        }
+
+        private List<Trade> MatchOrder(Order bid)
         {
             Dictionary<decimal, List<Order>> offerQueue = GetOfferQueue(bid.buySell);
             Int64 quantity = bid.quantity;
             decimal bidPrice = bid.price;
 
+            List<Trade> trades = new List<Trade>();
             Stack<decimal> offerPrices = GetOfferPrices(bid.buySell, offerQueue);
 
             while (offerPrices.Count > 0)
@@ -88,13 +163,13 @@ namespace OrderMatchingLibrary
                     if (bid.buySell == BuySell.Buy && bidPrice < offerPrice)
                     {
                         Console.WriteLine("Bid and Best Offer Prices do not overlap");
-                        return;
+                        return trades;
                     }
 
                     if (bid.buySell == BuySell.Sell && bidPrice > offerPrice)
                     {
                         Console.WriteLine("Bid and Best Offer Prices do not overlap");
-                        return;
+                        return trades;
                     }
                 }
 
@@ -111,8 +186,13 @@ namespace OrderMatchingLibrary
                         DateTime executionTime = DateTime.Now;
 
                         decimal matchedPrice = offer.price;
-                        tradeQueue.Add(CreateTrade(bid, matchedQuantity, matchedPrice, offer.orderNumber, executionTime));
-                        tradeQueue.Add(CreateTrade(offer, matchedQuantity, matchedPrice, bid.orderNumber, executionTime));
+                        if (OrderMatchingEngine.tradingMode == TradingMode.Active || OrderMatchingEngine.tradingMode == TradingMode.Startup)
+                        {
+                            //tradeQueue.Add(CreateTrade(bid, matchedQuantity, matchedPrice, offer.orderNumber, executionTime));
+                            //tradeQueue.Add(CreateTrade(offer, matchedQuantity, matchedPrice, bid.orderNumber, executionTime));
+                            trades.Add(CreateTrade(bid, matchedQuantity, matchedPrice, offer.orderNumber, executionTime));
+                            trades.Add(CreateTrade(offer, matchedQuantity, matchedPrice, bid.orderNumber, executionTime));
+                        }
 
                         if (offer.unfilledQuantity == 0)
                         {
@@ -128,11 +208,12 @@ namespace OrderMatchingLibrary
                         if (bid.unfilledQuantity == 0)
                         {
                             Console.WriteLine("New Order is FULLY MATCHED, stop");
-                            return;
+                            return trades;
                         }
                     }
                 }
             }
+            return trades;
         }
 
         public Stack<decimal> GetOfferPrices(BuySell bidBuySell, Dictionary<decimal, List<Order>> offerQueue)
