@@ -35,6 +35,8 @@ namespace OrderMatchingEngine
 
         public static Boolean running = true;
 
+        public static TradingMode tradingMode = TradingMode.Passive;
+
         protected static void LoadAccountInformation()
         {
             // Load traders account information from the agent back into memory
@@ -319,5 +321,12 @@ namespace OrderMatchingEngine
             }
 
         }
+    }
+
+    public enum TradingMode
+    {
+        Passive = 0x00,
+        Startup = 0x01,
+        Active = 0x02
     }
 }
