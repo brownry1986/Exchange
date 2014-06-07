@@ -42,5 +42,16 @@ namespace ServiceLibrary
             }
             return trades;
         }
+
+        public TradingMode SwitchTradingMode()
+        {
+            Message message = new Message(MessageType.AdminSwitchTradingMode, 0);
+            Socket socket = Messenger.SendMessage(message);
+            Message response = Messenger.ReceiveMessage(socket);
+            Console.WriteLine("Received Response - Message Type: {0}", response.messageType);
+            TradingMode tradingMode = (TradingMode)response.payload;
+            Console.WriteLine("Received Response - Trading Mode: {0}", tradingMode);
+            return tradingMode;
+        }
     }
 }

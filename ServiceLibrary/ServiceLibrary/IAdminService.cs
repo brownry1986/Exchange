@@ -16,5 +16,8 @@ namespace ServiceLibrary
 
         [OperationContract]
         List<Trade> GetTrades(Int64 productId, Int64 tradeId);
+
+        [OperationContract]
+        TradingMode SwitchTradingMode();
     }
 }

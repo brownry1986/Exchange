@@ -64,5 +64,6 @@ namespace ServiceLibrary
             Console.WriteLine("Received Response - Bid/Ask: {0}/{1}", bidAsk.bidPrice, bidAsk.askPrice);
             return bidAsk;
         }
+
     }
 }
