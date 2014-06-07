@@ -176,7 +176,10 @@ namespace AdminClient
                 Thread.Sleep(1000);
                 while (AdminForm.active)
                 {
-                    form.Invoke(new MethodInvoker(() => Refresh()));
+                    if (form != null)
+                    {
+                        form.Invoke(new MethodInvoker(() => Refresh()));
+                    }
                     Thread.Sleep(5000);
                 }
             }
