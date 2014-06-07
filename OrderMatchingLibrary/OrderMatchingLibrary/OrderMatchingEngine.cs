@@ -13,10 +13,10 @@ using ClassLibrary;
 using System.Runtime.Remoting.Messaging;
 using System.Collections.Concurrent;
 
-namespace OrderMatchingEngine
+namespace OrderMatchingLibrary
 {
 
-    class OrderMatchingEngine
+    public class OrderMatchingEngine
     {
 
         static Dictionary<Int64, OrderBook> orderBooks = new Dictionary<Int64,OrderBook>();
@@ -323,10 +323,4 @@ namespace OrderMatchingEngine
         }
     }
 
-    public enum TradingMode
-    {
-        Passive = 0x00,
-        Startup = 0x01,
-        Active = 0x02
-    }
 }

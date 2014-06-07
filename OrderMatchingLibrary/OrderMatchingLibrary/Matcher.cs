@@ -14,7 +14,7 @@ using ClassLibrary;
 using System.Runtime.Remoting.Messaging;
 using System.Collections.Concurrent;
 
-namespace OrderMatchingEngine
+namespace OrderMatchingLibrary
 {
     public class Matcher
     {
@@ -50,18 +50,16 @@ namespace OrderMatchingEngine
                         Order bid = orderQueue.Take();
                         Console.WriteLine("Matcher got order: {0}", bid.ToString());
 
-                        decimal bidPrice = bid.buySell == BuySell.Buy ? bid.price : -bid.price;
-
                         if (OrderMatchingEngine.tradingMode == TradingMode.Active)
                         {
-                            MatchOrder(bid, bidPrice);
+                            MatchOrder(bid);
                         }
 
                         // If there is unfilled quantity add the order to the order book unless it is a market order
                         if (bid.unfilledQuantity > 0 && bid.orderType != OrderType.Market)
                         {
                             Console.WriteLine("New Order is not FULLY MATCHED, add to dictionary");
-                            AddOrder(bid, -bidPrice);
+                            AddOrder(bid);
                         }
                     }
                     catch (ThreadInterruptedException ex)
@@ -72,27 +70,32 @@ namespace OrderMatchingEngine
             }
         }
 
-        public void MatchOrder(Order bid, decimal bidPrice)
+        public void MatchOrder(Order bid)
         {
             Dictionary<decimal, List<Order>> offerQueue = GetOfferQueue(bid.buySell);
             Int64 quantity = bid.quantity;
+            decimal bidPrice = bid.price;
 
-            List<decimal> keys = new List<decimal>(offerQueue.Keys);
-            keys.Sort();
-            keys.Reverse();
-            Stack<decimal> offerPrices = new Stack<decimal>(keys);
-            decimal bestPrice = offerPrices.Count > 0 ? offerPrices.Peek() : 0;
-            Console.WriteLine("Attempt to Match: Bid Price = {0}, Bid Quantity = {1}, Best Offer Price = {2}", bidPrice, quantity, (offerPrices.Count > 0 ? offerPrices.Peek() : 0));
+            Stack<decimal> offerPrices = GetOfferPrices(bid.buySell, offerQueue);
 
             while (offerPrices.Count > 0)
             {
                 decimal offerPrice = offerPrices.Pop();
 
                 Console.WriteLine("Bid Price = {0}, Best Offer Price = {1}", bidPrice, offerPrice);
-                if (bid.orderType == OrderType.Limit && bidPrice < offerPrice)
+                if (bid.orderType == OrderType.Limit)
                 {
-                    Console.WriteLine("Bid and Best Offer Prices do not overlap");
-                    return;
+                    if (bid.buySell == BuySell.Buy && bidPrice < offerPrice)
+                    {
+                        Console.WriteLine("Bid and Best Offer Prices do not overlap");
+                        return;
+                    }
+
+                    if (bid.buySell == BuySell.Sell && bidPrice > offerPrice)
+                    {
+                        Console.WriteLine("Bid and Best Offer Prices do not overlap");
+                        return;
+                    }
                 }
 
                 List<Order> existingOffers = new List<Order>();
@@ -132,11 +135,23 @@ namespace OrderMatchingEngine
             }
         }
 
-        public void AddOrder(Order order, decimal price)
+        public Stack<decimal> GetOfferPrices(BuySell bidBuySell, Dictionary<decimal, List<Order>> offerQueue)
+        {
+            List<decimal> keys = new List<decimal>(offerQueue.Keys);
+            keys.Sort();
+            if (bidBuySell == BuySell.Buy)
+            {
+                keys.Reverse();
+            }
+
+            return new Stack<decimal>(keys);
+        }
+
+        public void AddOrder(Order order)
         {
             Dictionary<decimal, List<Order>> bidQueue = GetBidQueue(order.buySell);
             List<Order> openOrders;
-            if (bidQueue.TryGetValue(price, out openOrders))
+            if (bidQueue.TryGetValue(order.price, out openOrders))
             {
                 openOrders.Add(order);
             }
@@ -144,7 +159,7 @@ namespace OrderMatchingEngine
             {
                 openOrders = new List<Order>();
                 openOrders.Add(order);
-                bidQueue.Add(price, openOrders);
+                bidQueue.Add(order.price, openOrders);
             }
         }
 

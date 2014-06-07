@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OrderMatchingEngine")]
+[assembly: AssemblyTitle("OrderMatchingLibrary")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OrderMatchingEngine")]
+[assembly: AssemblyProduct("OrderMatchingLibrary")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1b190621-f878-4834-8721-806daea3894f")]
+[assembly: Guid("55281455-3f0d-42ca-b2ef-6d9aa752a6c1")]
 
 // Version information for an assembly consists of the following four values:
 //

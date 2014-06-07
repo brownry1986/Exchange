@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ClassLibrary;
 
-namespace OrderMatchingEngine
+namespace OrderMatchingLibrary
 {
     public class OrderBook
     {

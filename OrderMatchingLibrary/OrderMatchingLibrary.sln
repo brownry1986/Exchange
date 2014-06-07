@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderMatchingEngine", "OrderMatchingEngine\OrderMatchingEngine.csproj", "{8F35E8B6-545D-4AED-A3F4-FE2EA21700FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderMatchingLibrary", "OrderMatchingLibrary\OrderMatchingLibrary.csproj", "{4EED4D42-54FB-45EE-A0C2-9A55069B1F2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8F35E8B6-545D-4AED-A3F4-FE2EA21700FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F35E8B6-545D-4AED-A3F4-FE2EA21700FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F35E8B6-545D-4AED-A3F4-FE2EA21700FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F35E8B6-545D-4AED-A3F4-FE2EA21700FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EED4D42-54FB-45EE-A0C2-9A55069B1F2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EED4D42-54FB-45EE-A0C2-9A55069B1F2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EED4D42-54FB-45EE-A0C2-9A55069B1F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EED4D42-54FB-45EE-A0C2-9A55069B1F2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
