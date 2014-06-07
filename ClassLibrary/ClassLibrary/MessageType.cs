@@ -18,6 +18,7 @@ namespace ClassLibrary
         AdminRetrieveOrders = 0x06,
         AdminRetrieveTrades = 0x07,
         AdminRetrieveHistoricalTrades = 0x08,
+        AdminSwitchTradingMode = 0x09,
         Success = 0x10,
         Failure = 0x11
     }
