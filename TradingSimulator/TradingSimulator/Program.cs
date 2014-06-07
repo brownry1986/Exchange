@@ -9,25 +9,25 @@ namespace TradingSimulator
     {
         static void Main(String[] args)
         {
-            if (args.Length == 1)
-            {
-                GetTradingStrategy(args[0]).GeneratorOrders();
-            }
-            else
-            {
-                GetTradingStrategy("SimpleDistributed").GeneratorOrders();
-            }
+            Console.WriteLine("Choose trader simluation:");
+            Console.WriteLine("1. Simple Distributed");
+            Console.WriteLine("2. Random Walk");
+            Console.WriteLine("3. Hisorical");
+            Int64 strategy = Convert.ToInt64(Console.ReadLine());
 
+            GetTradingStrategy(strategy).GeneratorOrders();
         }
 
-        private static ITrader GetTradingStrategy(String strategy)
+        private static ITrader GetTradingStrategy(Int64 strategy)
         {
             switch (strategy)
             {
-                case "SimpleDistributed":
+                case 1:
                     return new SimpleDistributedTrader();
-                case "RandomWalk":
+                case 2:
                     return new RandomWalkTrader();
+                case 3:
+                    return new HistoricalTrader();
                 default:
                     return new SimpleDistributedTrader();
             }

@@ -8,14 +8,14 @@ using ClassLibrary;
 
 namespace TradingSimulator
 {
-    class RandomWalkTrader : AbstractTrader
+    class HistoricalTrader : AbstractTrader
     {
         double startPrice;
         double variance;
         double distribution;
         Int64 numOrders;
 
-        public RandomWalkTrader()
+        public HistoricalTrader()
         {
             Console.Write("Enter start price: ");
             this.startPrice = Convert.ToDouble(Console.ReadLine());
@@ -30,25 +30,31 @@ namespace TradingSimulator
         public override void GeneratorOrders()
         {
             double nextPrice = startPrice;
+            int lastTradeId = 0;
 
+            //int lastTradeId = 0;
             for (int i = 0; i < numOrders; i++)
             {
                 nextPrice = SimulateAsset(nextPrice, variance, .2, 1, 1.0 / 252.0);
                 Console.WriteLine("NextPrice = {0}", nextPrice);
 
                 // Create new buy order
-                nextPrice = Convert.ToDouble(SimulatePrice(nextPrice * (1 - distribution), variance));
-                SubmitOrder(BuySell.Buy, Convert.ToDecimal(nextPrice), SimulateQuantity(200, 10));
-                Console.WriteLine("Price: {0}; Variance: {1}", nextPrice, variance);
+                SubmitOrder(BuySell.Buy, SimulatePrice(nextPrice * (1 - distribution), variance), SimulateQuantity(200, 10));
 
                 // Create new sell order
-                nextPrice = Convert.ToDouble(SimulatePrice(nextPrice * (1 + distribution), variance));
-                SubmitOrder(BuySell.Sell, Convert.ToDecimal(nextPrice), SimulateQuantity(200, 10));
+                SubmitOrder(BuySell.Sell, SimulatePrice(nextPrice * (1 + distribution), variance), SimulateQuantity(200, 10));
 
-                Console.WriteLine("Price: {0}; Variance: {1}", nextPrice, variance);
+                List<Trade> trades = GetTrades(20);
+                if (trades.Count > 1)
+                {
+                    lastTradeId = (int)trades.Last().tradeId;
+                    nextPrice = CalculateHistoricalMean(trades);
+                    variance = CalculateHistoricalVariance(trades);
+                }
+
+                Console.WriteLine("Mean: {0}; Variance: {1}", nextPrice, variance);
                 Thread.Sleep(1000);
             }
         }
-
-    }
+    }    
 }
