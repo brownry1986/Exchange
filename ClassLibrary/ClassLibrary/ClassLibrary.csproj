@@ -58,6 +58,7 @@
     <Compile Include="TradeNumberGenerator.cs" />
     <Compile Include="Trader.cs" />
     <Compile Include="TraderList.cs" />
+    <Compile Include="TradingMode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

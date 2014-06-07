@@ -40,6 +40,7 @@ namespace ClassLibrary
                 catch (ThreadInterruptedException ex)
                 {
                     Console.WriteLine("Thread interrupted, stopping");
+                    socket.Close();
                     running = false;
                 }
             }
