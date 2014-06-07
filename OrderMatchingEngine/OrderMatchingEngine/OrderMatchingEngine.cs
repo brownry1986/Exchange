@@ -27,7 +27,7 @@ namespace OrderMatchingEngine
 
         static BlockingCollection<Trade> tradeQueue = new BlockingCollection<Trade>();
 
-        Thread[] matcherThreads;
+        List<Thread> matcherThreads;
 
         Thread tradeLoadThread;
 
@@ -44,7 +44,7 @@ namespace OrderMatchingEngine
         {
             LoadAccountInformation();
 
-            matcherThreads = new Thread[ProductList.products.Count - 2];
+            matcherThreads = new List<Thread>();
 
             foreach (Product product in ProductList.products)
             {
@@ -60,7 +60,7 @@ namespace OrderMatchingEngine
                 Matcher matcher = new Matcher(orderQueue, tradeQueue);
                 Thread matcherThread = new Thread(matcher.Match);
                 matcherThread.Start();
-                matcherThreads[product.productId] = matcherThread;
+                matcherThreads.Add(matcherThread);
             }
 
             TradeLoader tradeLoad = new TradeLoader();
