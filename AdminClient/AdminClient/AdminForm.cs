@@ -25,9 +25,33 @@ namespace AdminClient
         public AdminForm()
         {
             InitializeComponent();
+
+            TradingMode tradingMode = TradingMode.Passive;
+            this.tradingModeBox.Text = TradingModeText(tradingMode);
+
             Refresher refresher = new Refresher(this);
             Thread refresherThread = new Thread(refresher.Start);
             refresherThread.Start();
+        }
+
+        private String TradingModeText(TradingMode tradingMode)
+        {
+            switch (tradingMode)
+            {
+                case TradingMode.Active :
+                    return "Active";
+                case TradingMode.Passive :
+                    return "Passive";
+                default :
+                    return "Startup";
+            }
+        }
+
+        private void tradingModeButton_Click(object sender, EventArgs e)
+        {
+            ServiceLibrary.IAdminService adminService = new ServiceLibrary.AdminService();
+            TradingMode tradingMode = adminService.SwitchTradingMode();
+            this.tradingModeBox.Text = TradingModeText(tradingMode);
         }
 
         private void form_Close(object sender, EventArgs e)
@@ -163,6 +187,5 @@ namespace AdminClient
             }
 
         }
-
     }
 }
