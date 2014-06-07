@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractTrader.cs" />
+    <Compile Include="BidAskTrader.cs" />
     <Compile Include="HistoricalTrader.cs" />
     <Compile Include="ITrader.cs" />
     <Compile Include="Program.cs" />

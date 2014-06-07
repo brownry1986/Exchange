@@ -8,21 +8,19 @@ using ClassLibrary;
 
 namespace TradingSimulator
 {
-    class HistoricalTrader : AbstractTrader
+    class BidAskTrader : AbstractTrader
     {
         double startPrice;
         double variance;
         double distribution;
         Int64 numOrders;
 
-        public HistoricalTrader()
+        public BidAskTrader()
         {
             Console.Write("Enter start price: ");
             this.startPrice = Convert.ToDouble(Console.ReadLine());
             Console.Write("Enter variance: ");
             this.variance = Convert.ToDouble(Console.ReadLine());
-            Console.Write("Enter distribution: ");
-            this.distribution = Convert.ToDouble(Console.ReadLine());
             Console.Write("Enter number of orders: ");
             this.numOrders = Convert.ToInt64(Console.ReadLine());
         }
@@ -35,6 +33,12 @@ namespace TradingSimulator
             //int lastTradeId = 0;
             for (int i = 0; i < numOrders; i++)
             {
+                BidAsk bidAsk = GetBidAsk();
+                if (bidAsk.bidPrice > 0 && bidAsk.askPrice < Decimal.MaxValue)
+                {
+                    nextPrice = Convert.ToDouble((bidAsk.bidPrice + bidAsk.askPrice) / 2);
+                    variance = Convert.ToDouble((bidAsk.bidPrice - bidAsk.askPrice) / 2);
+                }
                 nextPrice = SimulateAsset(nextPrice, .02, .2, 1, 1.0 / 252.0);
                 Console.WriteLine("NextPrice = {0}", nextPrice);
 

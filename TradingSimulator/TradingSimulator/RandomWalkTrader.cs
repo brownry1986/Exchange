@@ -33,19 +33,17 @@ namespace TradingSimulator
 
             for (int i = 0; i < numOrders; i++)
             {
-                nextPrice = SimulateAsset(nextPrice, variance, .2, 1, 1.0 / 252.0);
+                nextPrice = SimulateAsset(nextPrice, .02, .2, 1, 1.0 / 252.0);
                 Console.WriteLine("NextPrice = {0}", nextPrice);
 
                 // Create new buy order
-                nextPrice = Convert.ToDouble(SimulatePrice(nextPrice * (1 - distribution), variance));
-                SubmitOrder(BuySell.Buy, Convert.ToDecimal(nextPrice), SimulateQuantity(200, 10));
+                SubmitOrder(BuySell.Buy, SimulatePrice(nextPrice * (1 - distribution), variance), SimulateQuantity(200, 10));
                 Console.WriteLine("Price: {0}; Variance: {1}", nextPrice, variance);
 
                 // Create new sell order
-                nextPrice = Convert.ToDouble(SimulatePrice(nextPrice * (1 + distribution), variance));
-                SubmitOrder(BuySell.Sell, Convert.ToDecimal(nextPrice), SimulateQuantity(200, 10));
-
+                SubmitOrder(BuySell.Sell, SimulatePrice(nextPrice * (1 + distribution), variance), SimulateQuantity(200, 10));
                 Console.WriteLine("Price: {0}; Variance: {1}", nextPrice, variance);
+
                 Thread.Sleep(1000);
             }
         }

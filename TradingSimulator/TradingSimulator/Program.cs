@@ -13,6 +13,7 @@ namespace TradingSimulator
             Console.WriteLine("1. Simple Distributed");
             Console.WriteLine("2. Random Walk");
             Console.WriteLine("3. Hisorical");
+            Console.WriteLine("4. Bid/Ask");
             Int64 strategy = Convert.ToInt64(Console.ReadLine());
 
             GetTradingStrategy(strategy).GeneratorOrders();
@@ -28,6 +29,8 @@ namespace TradingSimulator
                     return new RandomWalkTrader();
                 case 3:
                     return new HistoricalTrader();
+                case 4:
+                    return new BidAskTrader();
                 default:
                     return new SimpleDistributedTrader();
             }
