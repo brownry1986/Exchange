@@ -49,8 +49,9 @@ namespace OrderMatchingLibrary
             List<Order> orders;
             if (ordersByTrader.TryGetValue(traderId, out orders))
             {
+                List<Order> currentOrders = new List<Order>(orders);
                 List<Order> returnList = new List<Order>();
-                foreach (Order order in orders)
+                foreach (Order order in currentOrders)
                 {
                     if (order.unfilledQuantity > 0)
                     {
@@ -67,7 +68,8 @@ namespace OrderMatchingLibrary
             decimal bestBid = 0;
             decimal bestAsk = decimal.MaxValue;
 
-            foreach (Order order in allOrders)
+            List<Order> currentOrders = new List<Order>(allOrders);
+            foreach (Order order in currentOrders)
             {
                 if (order.unfilledQuantity > 0 && order.orderType == OrderType.Limit)
                 {
@@ -108,7 +110,7 @@ namespace OrderMatchingLibrary
             List<Trade> trades;
             if (tradesByTrader.TryGetValue(traderId, out trades))
             {
-                return trades;
+                return new List<Trade>(trades);
             }
             return new List<Trade>();
         }
@@ -116,7 +118,8 @@ namespace OrderMatchingLibrary
         public List<Order> GetActiveOrders()
         {
             List<Order> activeOrders = new List<Order>();
-            foreach (Order order in allOrders)
+            List<Order> currentOrders = new List<Order>(allOrders);
+            foreach (Order order in currentOrders)
             {
                 if (order.unfilledQuantity > 0)
                 {
@@ -155,7 +158,8 @@ namespace OrderMatchingLibrary
         public Int64 GetOrderDepth(BuySell buySell)
         {
             Int64 depth = 0;
-            foreach (Order order in allOrders)
+            List<Order> currentOrders = new List<Order>(allOrders);
+            foreach (Order order in currentOrders)
             {
                 if (order.buySell == buySell)
                 {
