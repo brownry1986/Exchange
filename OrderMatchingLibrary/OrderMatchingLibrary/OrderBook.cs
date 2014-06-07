@@ -151,5 +151,18 @@ namespace OrderMatchingLibrary
             }
             return new List<Trade>();
         }
+
+        public Int64 GetOrderDepth(BuySell buySell)
+        {
+            Int64 depth = 0;
+            foreach (Order order in allOrders)
+            {
+                if (order.buySell == buySell)
+                {
+                    depth += order.unfilledQuantity;
+                }
+            }
+            return depth;
+        }
     }
 }

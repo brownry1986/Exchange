@@ -35,7 +35,7 @@ namespace OrderMatchingLibrary
 
         public static Boolean running = true;
 
-        public static TradingMode tradingMode = TradingMode.Passive;
+        public static TradingMode tradingMode = TradingMode.Active;
 
         protected static void LoadAccountInformation()
         {
@@ -177,6 +177,16 @@ namespace OrderMatchingLibrary
                     if (bidAsk.askPrice < decimal.MaxValue && order.price > bidAsk.askPrice * 10)
                     {
                         Console.WriteLine("Order rejected, price is more than 10 times the current Ask Price");
+                        return false;
+                    }
+                }
+
+                if (order.orderType == OrderType.Market)
+                {
+                    Int64 depth = orderBook.GetOrderDepth(order.buySell == BuySell.Buy ? BuySell.Sell : BuySell.Buy);
+                    if (order.quantity > depth)
+                    {
+                        Console.WriteLine("Order rejected, market order with quantity greater than open interest");
                         return false;
                     }
                 }
