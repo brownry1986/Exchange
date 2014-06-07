@@ -9,13 +9,15 @@ namespace TradingSimulator
     {
         static void Main(String[] args)
         {
-            if (args.Length != 1)
+            if (args.Length == 1)
             {
-                Console.WriteLine("Invalid arguments");
-                return;
+                GetTradingStrategy(args[0]).GeneratorOrders();
+            }
+            else
+            {
+                GetTradingStrategy("SimpleDistributed").GeneratorOrders();
             }
 
-            GetTradingStrategy(args[0]).GeneratorOrders();
         }
 
         private static ITrader GetTradingStrategy(String strategy)
