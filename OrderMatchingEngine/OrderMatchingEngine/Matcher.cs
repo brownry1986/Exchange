@@ -37,33 +37,40 @@ namespace OrderMatchingEngine
 
         public void Match()
         {
-            while (true)
+            while (OrderMatchingEngine.running)
             {
-                Order bid = orderQueue.Take();
-                Console.WriteLine("Matcher got order: {0}", bid.ToString());
-
-                Int64 quantity = bid.quantity;
-                decimal bidPrice = bid.price;
-                List<decimal> keys = new List<decimal>(GetOfferQueue(bid.buySell).Keys);
-                keys.Sort();
-                keys.Reverse();
-
-                if (bid.buySell == BuySell.Sell)
+                try
                 {
-                    bidPrice = -bidPrice;
+                    Order bid = orderQueue.Take();
+                    Console.WriteLine("Matcher got order: {0}", bid.ToString());
+
+                    Int64 quantity = bid.quantity;
+                    decimal bidPrice = bid.price;
+                    List<decimal> keys = new List<decimal>(GetOfferQueue(bid.buySell).Keys);
+                    keys.Sort();
+                    keys.Reverse();
+
+                    if (bid.buySell == BuySell.Sell)
+                    {
+                        bidPrice = -bidPrice;
+                    }
+
+                    Stack<decimal> offerPrices = new Stack<decimal>(keys);
+                    decimal bestPrice = offerPrices.Count > 0 ? offerPrices.Peek() : 0;
+
+                    Console.WriteLine("Attempt to Match: Bid Price = {0}, Bid Quantity = {1}, Best Offer Price = {2}", bidPrice, quantity, (offerPrices.Count > 0 ? offerPrices.Peek() : 0));
+                    MatchOrders(bid, offerPrices, bidPrice);
+
+                    // If there is unfilled quantity add the order to the order book unless it is a market order
+                    if (bid.unfilledQuantity > 0 && bid.orderType != OrderType.Market)
+                    {
+                        Console.WriteLine("New Order is not FULLY MATCHED, add to dictionary");
+                        AddOrder(bid, -bidPrice);
+                    }
                 }
-
-                Stack<decimal> offerPrices = new Stack<decimal>(keys);
-                decimal bestPrice = offerPrices.Count > 0 ? offerPrices.Peek() : 0;
-
-                Console.WriteLine("Attempt to Match: Bid Price = {0}, Bid Quantity = {1}, Best Offer Price = {2}", bidPrice, quantity, (offerPrices.Count > 0 ? offerPrices.Peek() : 0));
-                MatchOrders(bid, offerPrices, bidPrice);
-
-                // If there is unfilled quantity add the order to the order book unless it is a market order
-                if (bid.unfilledQuantity > 0 && bid.orderType != OrderType.Market)
+                catch (ThreadInterruptedException ex)
                 {
-                    Console.WriteLine("New Order is not FULLY MATCHED, add to dictionary");
-                    AddOrder(bid, -bidPrice);
+                    Console.WriteLine("Thread interrupted, stopping");
                 }
             }
         }

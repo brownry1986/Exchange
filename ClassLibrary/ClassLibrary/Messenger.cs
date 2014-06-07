@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
@@ -16,6 +17,7 @@ namespace ClassLibrary
     {
         public static void Listen(AsyncCallback callback)
         {
+            Boolean running = true;
             IPHostEntry ipHostInfo = Dns.GetHostByAddress("127.0.0.1");
             IPAddress ipAddress = ipHostInfo.AddressList[0];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
@@ -24,14 +26,22 @@ namespace ClassLibrary
             socket.Bind(localEndPoint);
             socket.Listen(100);
 
-            while (true)
+            while (running)
             {
-                Console.WriteLine("Waiting for connection...");
-                Socket socketServer = socket.Accept();
-                Console.WriteLine("Socket connection accepted from: " + ((IPEndPoint)socketServer.RemoteEndPoint).Address.ToString());
+                try
+                {
+                    Console.WriteLine("Waiting for connection...");
+                    Socket socketServer = socket.Accept();
+                    Console.WriteLine("Socket connection accepted from: " + ((IPEndPoint)socketServer.RemoteEndPoint).Address.ToString());
 
-                ProcessMessageAsync caller = new ProcessMessageAsync(ProcessMessage);
-                IAsyncResult result = caller.BeginInvoke(socketServer, callback, null);
+                    ProcessMessageAsync caller = new ProcessMessageAsync(ProcessMessage);
+                    IAsyncResult result = caller.BeginInvoke(socketServer, callback, null);
+                }
+                catch (ThreadInterruptedException ex)
+                {
+                    Console.WriteLine("Thread interrupted, stopping");
+                    running = false;
+                }
             }
         }
 

@@ -27,11 +27,26 @@ namespace OrderMatchingEngine
 
         static BlockingCollection<Trade> tradeQueue = new BlockingCollection<Trade>();
 
-        static void Main(string[] args)
+        Thread[] matcherThreads;
+
+        Thread tradeLoadThread;
+
+        Thread listenerThread;
+
+        public static Boolean running = true;
+
+        protected static void LoadAccountInformation()
+        {
+            // Load traders account information from the agent back into memory
+        }
+
+        public void Start()
         {
             LoadAccountInformation();
 
-            foreach (Product product in ProductList.products) 
+            matcherThreads = new Thread[ProductList.products.Count - 2];
+
+            foreach (Product product in ProductList.products)
             {
                 if (product.productId < 0)
                 {
@@ -41,52 +56,42 @@ namespace OrderMatchingEngine
                 orderQueues.Add(orderQueue);
                 OrderBook orderBook = new OrderBook(product.productId);
                 orderBooks.Add(product.productId, orderBook);
+
                 Matcher matcher = new Matcher(orderQueue, tradeQueue);
                 Thread matcherThread = new Thread(matcher.Match);
                 matcherThread.Start();
+                matcherThreads[product.productId] = matcherThread;
             }
 
             TradeLoader tradeLoad = new TradeLoader();
-            Thread tradeLoadThread = new Thread(tradeLoad.Start);
+            tradeLoadThread = new Thread(tradeLoad.Start);
             tradeLoadThread.Start();
 
-            OrderMatchingEngine ome = new OrderMatchingEngine();
-            ome.Start();
+            MessageListener listener = new MessageListener();
+            listenerThread = new Thread(listener.Start);
+            listenerThread.Start();
         }
 
-        protected static void LoadAccountInformation()
-        {
-            // Load traders account information from the agent back into memory
-        }
-
-        public class TradeLoader
+        public class MessageListener
         {
             public void Start()
             {
-                while(true)
-                {
-                    Trade trade = tradeQueue.Take();
-                    UpdateAccountInformation(trade);
-
-                    OrderBook orderBook;
-                    if (orderBooks.TryGetValue(trade.productId, out orderBook))
-                    {
-                        orderBook.AddTrade(trade);
-                    }
-                }
+                AsyncCallback callBack = new AsyncCallback(ProcessMessage);
+                Messenger.Listen(callBack);
             }
-
-            protected void UpdateAccountInformation(Trade trade)
-            {
-                // Update the trader's account information based on the executed trade
-            }
-
         }
 
-        protected void Start()
+        public void Stop()
         {
-            AsyncCallback callBack = new AsyncCallback(ProcessMessage);
-            Messenger.Listen(callBack);
+            running = false;
+            listenerThread.Interrupt();
+
+            foreach (Thread matcherThread in matcherThreads)
+            {
+                matcherThread.Interrupt();
+            }
+
+            tradeLoadThread.Interrupt();
         }
 
         protected static Message ProcessAction(Message message)
@@ -280,6 +285,37 @@ namespace OrderMatchingEngine
                 }
 
                 return new Message(MessageType.Failure, productId);
+            }
+
+        }
+
+        public class TradeLoader
+        {
+            public void Start()
+            {
+                while (OrderMatchingEngine.running)
+                {
+                    try
+                    {
+                        Trade trade = tradeQueue.Take();
+                        UpdateAccountInformation(trade);
+
+                        OrderBook orderBook;
+                        if (orderBooks.TryGetValue(trade.productId, out orderBook))
+                        {
+                            orderBook.AddTrade(trade);
+                        }
+                    }
+                    catch (ThreadInterruptedException ex)
+                    {
+                        Console.WriteLine("Thread interrupted, stopping");
+                    }
+                }
+            }
+
+            protected void UpdateAccountInformation(Trade trade)
+            {
+                // Update the trader's account information based on the executed trade
             }
 
         }

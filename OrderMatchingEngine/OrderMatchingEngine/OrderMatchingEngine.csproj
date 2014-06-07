@@ -4,8 +4,8 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5BD38FB4-B042-4BDE-913E-375F964A4BA1}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{8F35E8B6-545D-4AED-A3F4-FE2EA21700FC}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OrderMatchingEngine</RootNamespace>
     <AssemblyName>OrderMatchingEngine</AssemblyName>
@@ -31,26 +31,53 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>OrderMatchingEngine.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ClassLibrary">
       <HintPath>..\..\ClassLibrary\ClassLibrary\bin\Debug\ClassLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceLibrary">
+      <HintPath>..\..\ServiceLibrary\ServiceLibrary\bin\Debug\ServiceLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Matcher.cs" />
     <Compile Include="OrderBook.cs" />
     <Compile Include="OrderMatchingEngine.cs" />
+    <Compile Include="OrderMatchingService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OrderMatchingService.Designer.cs">
+      <DependentUpon>OrderMatchingService.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
