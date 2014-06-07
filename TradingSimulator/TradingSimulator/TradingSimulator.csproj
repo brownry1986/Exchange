@@ -46,7 +46,6 @@
   <ItemGroup>
     <Compile Include="AbstractTrader.cs" />
     <Compile Include="HistoricalTrader.cs" />
-    <Compile Include="HistoricalTraderWithSpike.cs" />
     <Compile Include="ITrader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
