@@ -8,6 +8,11 @@ using ClassLibrary;
 
 namespace ServiceLibrary
 {
+    /*
+     * Interface to define contract for Administration Service
+     * 
+     * Implemented by Ryan Brown
+     */
     [ServiceContract]
     public interface IAdminService
     {

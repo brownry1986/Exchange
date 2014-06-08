@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+    /*
+     * Domain object for trader order information
+     * 
+     * Implemented by Ryan Brown
+     */
     public class Trader
     {
         public Trader(Int64 traderId, String name) 

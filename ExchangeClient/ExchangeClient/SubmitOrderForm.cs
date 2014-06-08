@@ -12,6 +12,12 @@ using ClassLibrary;
 
 namespace ExchangeClient
 {
+	/*
+	 * Form object for the UI for the exchange client
+     * 
+     * Implemented by Ryan Brown
+     * Business requirements for GUI determined by discussions with entire team
+	 */
     public partial class SubmitOrderForm : Form
     {
 
@@ -19,6 +25,11 @@ namespace ExchangeClient
 
         protected static Boolean active = true;
 
+        /*
+         * Initialize UI form and startup thread for refreshing order list and trade list
+         * 
+         * Implemented by Ryan Brown
+         */
         public SubmitOrderForm()
         {
             InitializeComponent();
@@ -27,6 +38,11 @@ namespace ExchangeClient
             refresherThread.Start();
         }
 
+        /*
+         * Upon clicking the submit button, pull the data from the user to create and Order and call the Order Service to submit the order
+         * 
+         * Implemented by Ryan Brown
+         */
         private void submitButton_Click(object sender, EventArgs e)
         {
             Order order = new Order();
@@ -44,11 +60,11 @@ namespace ExchangeClient
             refreshOrders();
         }
 
-        private void refreshButton_Click(object sender, EventArgs e)
-        {
-            refreshOrders();
-        }
-
+        /*
+         * Retrieve the list of active orders from the Order Service and display in the UI
+         * 
+         * Implemented by Ryan Brown
+         */
         protected void refreshOrders()
         {
             Int64 traderId = Convert.ToInt64(traderBox.SelectedValue);
@@ -58,6 +74,11 @@ namespace ExchangeClient
             orderDataGridView.DataSource = orders;
         }
 
+        /*
+         * Retrieve the list of matched trades from the Order Service and display in the UI
+         * 
+         * Implemented by Ryan Brown
+         */
         private void refreshTrades()
         {
             Int64 traderId = Convert.ToInt64(traderBox.SelectedValue);
@@ -67,6 +88,11 @@ namespace ExchangeClient
             tradeDataGridView.DataSource = trades;
         }
 
+        /*
+         * Retrieve the bid/ask prices for the selected product and display in the UI
+         * 
+         * Implemented by Ryan Brown
+         */
         private void refreshProductInformation()
         {
             ServiceLibrary.IOrderService orderService = new ServiceLibrary.OrderService();
@@ -75,6 +101,11 @@ namespace ExchangeClient
             askPriceBox.Text = bidAsk.getAskPriceValue();
         }
 
+        /*
+         * Upon selection of the trader, lock down the trader drop down and display the product selection box
+         * 
+         * Implemented by Ryan Brown
+         */
         private void traderBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             traderBox.Enabled = false;
@@ -82,6 +113,11 @@ namespace ExchangeClient
             productBox.Visible = true;
         }
 
+        /*
+         * Upon selection of the product, retrieve and display the product information, active orders, and matched trades for the selected product
+         * 
+         * Implemented by Ryan Brown
+         */
         private void productBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             Boolean display = (productBox.SelectedIndex > 0);
@@ -100,6 +136,11 @@ namespace ExchangeClient
             SubmitOrderForm.refresh = display;
         }
 
+        /*
+         * Upon selection of the order type, if the order type is a Market Order hide the price box
+         * 
+         * Implemented by Ryan Brown
+         */
         private void orderTypeBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.orderTypeBox.SelectedIndex == 0)
@@ -114,11 +155,21 @@ namespace ExchangeClient
             }
         }
 
+        /*
+         * Upon closing the form, set the form as inactive so that other threads will know to shut down
+         * 
+         * Implemented by Ryan Brown
+         */
         private void form_Close(object sender, EventArgs e)
         {
             SubmitOrderForm.active = false;
         }
 
+        /*
+         * Class to periodically refresh the product, order, and trade information
+         * 
+         * Implemented by Ryan Brown
+         */
         protected class Refresher
         {
             SubmitOrderForm form;
@@ -128,6 +179,11 @@ namespace ExchangeClient
                 this.form = form;
             }
 
+            /*
+             * Once the Exchange Client form is active and the refresh flag is set, refresh the data on the form every 5 seconds
+             * 
+             * Implemented by Ryan Brown
+             */
             public void Start()
             {
                 while (SubmitOrderForm.active)
@@ -140,6 +196,11 @@ namespace ExchangeClient
                 }
             }
 
+            /*
+             * Refresh orders, trades, and product information
+             * 
+             * Implemented by Ryan Brown
+             */
             public void Refresh()
             {
                 form.refreshOrders();

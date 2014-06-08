@@ -12,6 +12,11 @@ using ClassLibrary;
 
 namespace AdminClient
 {
+    /*
+     * Admin Form generates the UI for the administration client
+     * 
+     * Implemented by Ryan Brown
+     */
     public partial class AdminForm : Form
     {
         protected static Boolean active = true;
@@ -22,6 +27,11 @@ namespace AdminClient
 
         protected static int lastTradeId = 0;
 
+        /*
+         * Initial form object and kick off separate thread for refreshing the data in the form
+         * 
+         * Implemented by Ryan Brown
+         */
         public AdminForm()
         {
             InitializeComponent();
@@ -34,6 +44,11 @@ namespace AdminClient
             refresherThread.Start();
         }
 
+        /*
+         * Translate trading mode enumeration into text to displayin the UI
+         * 
+         * Implemented by Ryan Brown
+         */
         private String TradingModeText(TradingMode tradingMode)
         {
             switch (tradingMode)
@@ -47,6 +62,11 @@ namespace AdminClient
             }
         }
 
+        /*
+         * Upon clicking the Switch Trading Mode button, send command to the Matching Engine through the Admin Service to switch the trading mode
+         * 
+         * Implemented by Ryan Brown
+         */
         private void tradingModeButton_Click(object sender, EventArgs e)
         {
             ServiceLibrary.IAdminService adminService = new ServiceLibrary.AdminService();
@@ -54,11 +74,21 @@ namespace AdminClient
             this.tradingModeBox.Text = TradingModeText(tradingMode);
         }
 
+        /*
+         * Upon closing the form, set the active flag to false so that other threads know to stop running
+         * 
+         * Implemented by Ryan Brown
+         */
         private void form_Close(object sender, EventArgs e)
         {
             AdminForm.active = false;
         }
 
+        /*
+         * Refresh data displayed in the UI by retrieving data from the Matching Engine
+         * 
+         * Implemented by Ryan Brown
+         */
         private void RefreshCharts()
         {
             Dictionary<decimal, long> buyPriceDepth = new Dictionary<decimal, long>();
@@ -162,6 +192,11 @@ namespace AdminClient
             }
         }
 
+        /*
+         * Class to run in a separate thread to periodically invoke the RefreshCharts method on the form
+         * 
+         * Implemented by Ryan Brown
+         */
         protected class Refresher
         {
             AdminForm form;
@@ -171,6 +206,11 @@ namespace AdminClient
                 this.form = form;
             }
 
+            /*
+             * Upon starting the thread, sleep for 1 second then while the form is active continually refresh the charts every 5 seconds
+             * 
+             * Implemented by Ryan Brown
+             */
             public void Start()
             {
                 Thread.Sleep(1000);
@@ -184,11 +224,15 @@ namespace AdminClient
                 }
             }
 
+            /*
+             * Call the RefreshCharts method on the form object
+             * 
+             * Implemented by Ryan Brown
+             */
             public void Refresh()
             {
                 form.RefreshCharts();
             }
-
         }
     }
 }

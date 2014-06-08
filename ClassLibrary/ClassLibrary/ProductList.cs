@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+    /*
+     * Object to store static list of Product objects.  In production version this list would be loaded from a database.
+     * 
+     * Implemented by Ryan Brown
+     */
     public static class ProductList
     {
 

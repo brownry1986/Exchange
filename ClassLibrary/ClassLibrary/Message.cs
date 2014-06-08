@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+    /*
+     * Domain object for storing message information to pass between components
+     * 
+     * Implemented by Ryan Brown
+     */
     public class Message
     {
         public MessageType messageType { get; set; }

@@ -21,11 +21,21 @@ namespace OrderMatchingService
             InitializeComponent();
         }
 
+        /*
+         * When the service is started, kick-off the order matching engine
+         * 
+         * Implemented by Ryan Brown
+         */
         protected override void OnStart(string[] args)
         {
             orderMatchingEngine.Start();
         }
 
+        /*
+         * When the service is stopped, call the Stop method in the order matching engine to gracefully shut it down
+         * 
+         * Implemented by Ryan Brown
+         */
         protected override void OnStop()
         {
             orderMatchingEngine.Stop();

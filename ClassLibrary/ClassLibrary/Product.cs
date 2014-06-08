@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+    /*
+     * Domain object for holding product information
+     * 
+     * Implemented by Ryan Brown
+     */
     [Serializable]
     public class Product
     {

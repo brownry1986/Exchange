@@ -13,6 +13,11 @@ namespace ServiceLibrary
 
     public class OrderService : IOrderService
     {
+        /*
+         * Medthod to submit a new order
+         * 
+         * Implemented by Ryan Brown
+         */
         public Order SubmitOrder(Order order)
         {
             Message message = new Message(MessageType.SubmitOrder, order);
@@ -24,6 +29,11 @@ namespace ServiceLibrary
             return (Order)response.payload;
         }
 
+        /*
+         * Method to retrieve the active orders for the selected trader and product
+         * 
+         * Implemented by Ryan Brown
+         */
         public List<Order> GetOrders(Int64 productId, Int64 traderId)
         {
             Message message = new Message(MessageType.RetrieveOrders, new Tuple<Int64, Int64>(productId, traderId));
@@ -39,6 +49,11 @@ namespace ServiceLibrary
             return orders;
         }
 
+        /*
+         * Method to retrieve the matched trades for the selected trader and product
+         * 
+         * Implemented by Ryan Brown
+         */
         public List<Trade> GetTrades(Int64 productId, Int64 traderId)
         {
             Message message = new Message(MessageType.RetrieveTrades, new Tuple<Int64, Int64>(productId, traderId));
@@ -54,6 +69,11 @@ namespace ServiceLibrary
             return trades;
         }
 
+        /*
+         * Method to retrieve the bid/ask price for the selected product
+         * 
+         * Implemented by Ryan Brown
+         */
         public BidAsk GetBidAsk(Int64 productId)
         {
             Message message = new Message(MessageType.RetrieveBidAsk, productId);

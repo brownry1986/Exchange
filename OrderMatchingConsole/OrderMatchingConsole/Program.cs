@@ -7,6 +7,11 @@ using OrderMatchingLibrary;
 
 namespace OrderMatchingService
 {
+    /*
+     * Console application to kick of the Order Matching Engine for debugging purposes
+     * 
+     * Implemented by Ryan Brown
+     */
     class Program
     {
         static void Main(string[] args)

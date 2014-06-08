@@ -8,6 +8,11 @@ using ClassLibrary;
 
 namespace TradingSimulator
 {
+    /*
+     * Trader strategy to simulate a trader submitting orders with prices based on a random walk
+     * 
+     * Implemented by Max Gillman
+     */
     class RandomWalkTrader : AbstractTrader
     {
         double startPrice;

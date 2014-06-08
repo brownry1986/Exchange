@@ -7,6 +7,11 @@ using System.Runtime.Serialization;
 
 namespace ClassLibrary
 {
+    /*
+     * Domain object for holding order information
+     * 
+     * Implemented by Ryan Brown
+     */
     [Serializable]
     [DataContract]
     public class Order

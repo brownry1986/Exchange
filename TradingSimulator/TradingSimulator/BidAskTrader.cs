@@ -8,6 +8,11 @@ using ClassLibrary;
 
 namespace TradingSimulator
 {
+    /*
+     * Trader strategy to simulate a trader submitting orders with prices based on the current Bid/Ask price
+     * 
+     * Implemented by Ryan Brown
+     */
     class BidAskTrader : AbstractTrader
     {
         double startPrice;

@@ -9,10 +9,20 @@ using ClassLibrary;
 
 namespace TradingSimulator
 {
+    /*
+     * Abstract class to implement methods used for different types of trading strategies
+     * 
+     * Implemented by Ryan Brown
+     */
     public abstract class AbstractTrader : ITrader
     {
         abstract public void GeneratorOrders();
 
+        /*
+         * Method to create and submit an order given the price and quantity
+         * 
+         * Implemented by Ryan Brown and Max Gillman
+         */
         protected void SubmitOrder(BuySell buySell, decimal price, long quantity)
         {
             Order order = new Order();
@@ -28,6 +38,11 @@ namespace TradingSimulator
             Message response = Messenger.ReceiveMessage(socket);
         }
 
+        /*
+         * Method to simulate a random walk for a given product
+         * 
+         * Implemented by Max Gillman
+         */
         public double SimulateAsset(double so, double mu, double sigma, double tau, double delta)
         {
             double s = so;
@@ -40,16 +55,31 @@ namespace TradingSimulator
             return s;
         }
 
+        /*
+         * Method to generate and round a random price
+         * 
+         * Implemented by Max Gillman
+         */
         public decimal SimulatePrice(double mu, double sigma)
         {
             return Convert.ToDecimal(Math.Round(Rand.Gauss(mu, sigma), 1));
         }
 
+        /*
+         * Method to generate and round a random quantity
+         * 
+         * Implemented by Max Gillman
+         */
         public Int64 SimulateQuantity(double mu, double sigma)
         {
             return Convert.ToInt64(Math.Round(Rand.Gauss(mu, sigma)));
         }
 
+        /*
+         * Method to retrieve the bid/ask price
+         * 
+         * Implemented by Ryan Brown
+         */
         public BidAsk GetBidAsk()
         {
             Message message = new Message(MessageType.RetrieveBidAsk, (Int64)0);
@@ -60,6 +90,11 @@ namespace TradingSimulator
             return bidAsk;
         }
 
+        /*
+         * Method to retrieve the given number of historical trades
+         * 
+         * Implemented by Ryan Brown
+         */
         public List<Trade> GetTrades(int numberOfTrades)
         {
             Message message = new Message(MessageType.AdminRetrieveHistoricalTrades, new Tuple<Int64, Int64>(0, numberOfTrades));
@@ -68,6 +103,11 @@ namespace TradingSimulator
             return (List<Trade>)response.payload;
         }
 
+        /*
+         * Method to calculate the historical mean price given a list of trades
+         * 
+         * Implemented by Ryan Brown
+         */
         protected double CalculateHistoricalMean(List<Trade> trades)
         {
             double totalAmount = 0;
@@ -82,6 +122,11 @@ namespace TradingSimulator
             return totalAmount / totalQuantity;
         }
 
+        /*
+         * Method to calculate the historical variance in price given a list of trades
+         * 
+         * Implemented by Ryan Brown
+         */
         protected double CalculateHistoricalVariance(List<Trade> trades)
         {
             double sum = 0;

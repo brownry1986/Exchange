@@ -8,6 +8,11 @@ using ClassLibrary;
 
 namespace TradingSimulator
 {
+    /*
+     * Trader strategy to simulate a trader submitting orders with prices based on historical trade prices
+     * 
+     * Implemented by Ryan Brown
+     */
     class HistoricalTrader : AbstractTrader
     {
         double startPrice;

@@ -13,6 +13,11 @@ namespace ServiceLibrary
 
     public class AdminService : IAdminService
     {
+        /*
+         * Medthod to retreieve all orders for the selected product
+         * 
+         * Implemented by Ryan Brown
+         */
         public List<Order> GetOrders(Int64 productId)
         {
             Message message = new Message(MessageType.AdminRetrieveOrders, productId);
@@ -28,6 +33,11 @@ namespace ServiceLibrary
             return orders;
         }
 
+        /*
+         * Medthod to retreieve all matched trades for the selected product with a trade id greater than the specified trade id
+         * 
+         * Implemented by Ryan Brown
+         */
         public List<Trade> GetTrades(Int64 productId, Int64 tradeId)
         {
             Message message = new Message(MessageType.AdminRetrieveTrades, new Tuple<Int64, Int64>(productId, tradeId));
@@ -43,6 +53,11 @@ namespace ServiceLibrary
             return trades;
         }
 
+        /*
+         * Medthod to switch the trading mode and return the new mode
+         * 
+         * Implemented by Ryan Brown
+         */
         public TradingMode SwitchTradingMode()
         {
             Message message = new Message(MessageType.AdminSwitchTradingMode, 0);

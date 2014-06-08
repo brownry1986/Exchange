@@ -9,6 +9,11 @@ using ClassLibrary;
 
 namespace TradingSimulator
 {
+    /*
+     * Trader strategy to simulate a trader submitting orders with prices based a normal distribution
+     * 
+     * Implemented by Max Gillman
+     */
     public class SimpleDistributedTrader : AbstractTrader
     {
         double startPrice;

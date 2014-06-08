@@ -5,6 +5,11 @@ using System.Collections.Generic;
 
 namespace TradingSimulator
 {
+    /*
+     * Startup class for trading simulator allows the user to choose the desired trading strategy
+     * 
+     * Implemented by Ryan Brown
+     */
     public class Simulator
     {
         static void Main(String[] args)

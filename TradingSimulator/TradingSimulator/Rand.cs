@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace TradingSimulator
 {
+    /*
+     * Class for generating random numbers based on a Gaussian distribution
+     * 
+     * Implemented by Max Gillman
+     */
     static class Rand
     {
         private static Random random = new Random();

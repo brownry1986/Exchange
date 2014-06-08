@@ -13,8 +13,18 @@ using System.Runtime.Remoting.Messaging;
 
 namespace ClassLibrary
 {
+    /*
+     * Messenger class to handle the sending and receiving of messages between components
+     * 
+     * Implemented by Ryan Brown
+     */
     public static class Messenger
     {
+        /*
+         * Listen for connection requests and upon receiving a request, start another thread to process the message
+         * 
+         * Implemented by Ryan Brown
+         */
         public static void Listen(AsyncCallback callback)
         {
             Boolean running = true;
@@ -46,11 +56,21 @@ namespace ClassLibrary
             }
         }
 
+        /*
+         * Pass the socket along to the delagate to receive the message
+         * 
+         * Implemented by Ryan Brown
+         */
         public static Socket ProcessMessage(Socket socket)
         {
             return socket;
         }
 
+        /*
+         * Read the message from the socket, build the message object and return it to be processed
+         * 
+         * Implemented by Ryan Brown
+         */
         public static Message ReceiveMessage(Socket socket)
         {
             // Bind the socket to the local endpoint and listen for incoming connections.
@@ -95,6 +115,11 @@ namespace ClassLibrary
             return null;
         }
 
+        /*
+         * Send a given message through a given socket
+         * 
+         * Implemented by Ryan Brown
+         */
         public static void SendMessage(Socket socket, Message message)
         {
             MemoryStream stream = new MemoryStream();
@@ -116,6 +141,11 @@ namespace ClassLibrary
             socket.Send(data);
         }
 
+        /*
+         * Open socket and send message
+         * 
+         * Implemented by Ryan Brown
+         */
         public static Socket SendMessage(Message message)
         {
             // Connect to a remote device.
@@ -162,6 +192,11 @@ namespace ClassLibrary
         }
     }
 
+    /*
+     * Delegate method for asynchronous communication
+     * 
+     * Implemented by Ryan Brown
+     */
     public delegate Socket ProcessMessageAsync(Socket socket);
 
 }

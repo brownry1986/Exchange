@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+    /*
+     * Domain object for holding account information
+     * 
+     * Implemented by Ryan Brown
+     */
     public class Account
     {
         public virtual long traderId { get; set; }

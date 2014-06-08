@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+    /*
+     * Class to generate a unique trade number upon request
+     * 
+     * Implemented by Ryan Brown
+     */
     public class TradeNumberGenerator
     {
         private static Int64 tradeNumber = 0;

@@ -7,6 +7,11 @@ using ClassLibrary;
 
 namespace OrderMatchingLibrary
 {
+    /*
+     * Order Book stores the order and trade information for a single product and provides accessor methods
+     * 
+     * Implemented by Ryan Brown
+     */
     public class OrderBook
     {
         private Int64 productId;
@@ -24,6 +29,11 @@ namespace OrderMatchingLibrary
             this.productId = productId;
         }
 
+        /*
+         * Add a new order to the order book
+         * 
+         * Implemented by Ryan Brown
+         */
         public void AddOrder(Order order)
         {
             order.orderNumber = OrderNumberGenerator.getNext();
@@ -44,6 +54,11 @@ namespace OrderMatchingLibrary
             }
         }
 
+        /*
+         * Retrieve active orders from the order book for a specified trader
+         * 
+         * Implemented by Ryan Brown
+         */
         public List<Order> GetActiveOrders(Int64 traderId)
         {
             List<Order> orders;
@@ -63,6 +78,11 @@ namespace OrderMatchingLibrary
             return new List<Order>();
         }
 
+        /*
+         * Retrieve the current bid/ask price from the order book
+         * 
+         * Implemented by Ryan Brown
+         */
         public BidAsk GetBidAskPrice()
         {
             decimal bestBid = 0;
@@ -88,6 +108,11 @@ namespace OrderMatchingLibrary
             return new BidAsk(bestBid, bestAsk);
         }
 
+        /*
+         * Add a matched trade to the order book
+         * 
+         * Implemented by Ryan Brown
+         */
         public void AddTrade(Trade trade)
         {
             allTrades.Add(trade);
@@ -105,6 +130,11 @@ namespace OrderMatchingLibrary
             }
         }
 
+        /*
+         * Retrieve matched trades from the order book for a specified trader
+         * 
+         * Implemented by Ryan Brown
+         */
         public List<Trade> GetTrades(Int64 traderId)
         {
             List<Trade> trades;
@@ -115,6 +145,11 @@ namespace OrderMatchingLibrary
             return new List<Trade>();
         }
 
+        /*
+         * Retrieve all active orders from the order book
+         * 
+         * Implemented by Ryan Brown
+         */
         public List<Order> GetActiveOrders()
         {
             List<Order> activeOrders = new List<Order>();
@@ -129,6 +164,11 @@ namespace OrderMatchingLibrary
             return activeOrders;
         }
 
+        /*
+         * Retrieve trades from the order book since the last trade id passed in
+         * 
+         * Implemented by Ryan Brown
+         */
         public List<Trade> GetRecentTrades(Int64 lastTradeReturned)
         {
             Int64 startIndex = lastTradeReturned + 1;
@@ -143,6 +183,11 @@ namespace OrderMatchingLibrary
             return new List<Trade>();
         }
 
+        /*
+         * Retrieve the sepecified number of trades from the order book
+         * 
+         * Implemented by Ryan Brown
+         */
         public List<Trade> GetHistoricalTrades(Int64 numberOfTrades)
         {
             int endIndex = allTrades.Count - 1;
@@ -155,6 +200,11 @@ namespace OrderMatchingLibrary
             return new List<Trade>();
         }
 
+        /*
+         * Retrieve the depth of the order book
+         * 
+         * Implemented by Ryan Brown
+         */
         public Int64 GetOrderDepth(BuySell buySell)
         {
             Int64 depth = 0;

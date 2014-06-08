@@ -44,7 +44,6 @@
     <Compile Include="BidAsk.cs" />
     <Compile Include="BuySell.cs" />
     <Compile Include="IAction.cs" />
-    <Compile Include="IActionLibrary.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="Messenger.cs" />

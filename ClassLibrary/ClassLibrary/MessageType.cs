@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+    /*
+     * Enumeration for holding possible Message Types
+     * 
+     * Implemented by Ryan Brown
+     */
     [Flags]
     public enum MessageType
     {

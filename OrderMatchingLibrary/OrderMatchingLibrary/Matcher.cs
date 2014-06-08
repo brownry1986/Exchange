@@ -16,6 +16,13 @@ using System.Collections.Concurrent;
 
 namespace OrderMatchingLibrary
 {
+
+    /*
+     * Matching class for matching orders and creating trades
+     * 
+     * Implemented by Ryan Brown
+     * Business Logic determined by Chris Freeman and Max Gillman
+     */
     public class Matcher
     {
         BlockingCollection<Order> orderQueue;
@@ -37,6 +44,15 @@ namespace OrderMatchingLibrary
             sellQueue = new Dictionary<decimal, List<Order>>();
         }
 
+        /*
+         * Entry point for matching thread, continues executing while the application is in running mode.
+         * When the mode is switched to Startup mode, the startup logic is executed once and then the thread 
+         * periodically rechecks the trading mode.
+         * When the mode is switched to anything other than Startup mode, the matching logic is executed.
+         * 
+         * Implemented by Ryan Brown
+         * Business Logic determined by Chris Freeman and Max Gillman
+         */
         public void Match()
         {
             while (OrderMatchingEngine.running)
@@ -68,6 +84,13 @@ namespace OrderMatchingLibrary
             }
         }
 
+        /*
+         * Startup mode executes the startup matching logic.  Once the matching is complete, set the execution price on all matched trades
+         * to the last matched price and add the executed trades to the trade queue.
+         * 
+         * Implemented by Ryan Brown
+         * Business Logic determined by Chris Freeman
+         */
         private void StartupMode()
         {
             List<Trade> trades = StartupMatching();
@@ -85,6 +108,14 @@ namespace OrderMatchingLibrary
             }
         }
 
+        /*
+         * In matching mode, listen for orders in the order queue.  When an order is received check if the trading mode is active or
+         * passive.  If the mode is active, attempt to match the order and add matched trades to the trade queue.  If any quantity is
+         * unmatched, add the order to the resting orders.
+         * 
+         * Implemented by Ryan Brown
+         * Business Logic determined by Chris Freeman and Max Gillman
+         */
         private void MatchingMode()
         {
             Order bid = orderQueue.Take();
@@ -107,6 +138,13 @@ namespace OrderMatchingLibrary
             }
         }
 
+        /*
+         * Startup logic reads the resting buy orders starting with the best price and attempts to match with resting sell orders.  As long
+         * as order prices overlap, keep matching.  Once the prices no longer overlap, return the matched trades.
+         * 
+         * Implemented by Ryan Brown
+         * Business Logic determined by Chris Freeman
+         */
         private List<Trade> StartupMatching()
         {
             List<decimal> keys = new List<decimal>(buyQueue.Keys);
@@ -144,6 +182,16 @@ namespace OrderMatchingLibrary
             return allMatchedTrades;
         }
 
+        /*
+         * Order matching logic takes a new order and attempts to match it to the resting order by iterating through the prices of
+         * the resting orders and the resting orders at each price point.  When prices overlap, create trades and increment the filled
+         * quantity on both orders.  Once a resting order is filled, remove it from the resting order dictionary.  Once all orders at a price
+         * point are filled, remove the price from the resting order dictionary.  Continue iterating until the new order is filled or there
+         * are no more overlapping resting orders.
+         * 
+         * Implemented by Ryan Brown
+         * Business Logic determined by Chris Freeman and Max Gillman
+         */
         private List<Trade> MatchOrder(Order bid)
         {
             Dictionary<decimal, List<Order>> offerQueue = GetOfferQueue(bid.buySell);
@@ -188,8 +236,6 @@ namespace OrderMatchingLibrary
                         decimal matchedPrice = offer.price;
                         if (OrderMatchingEngine.tradingMode == TradingMode.Active || OrderMatchingEngine.tradingMode == TradingMode.Startup)
                         {
-                            //tradeQueue.Add(CreateTrade(bid, matchedQuantity, matchedPrice, offer.orderNumber, executionTime));
-                            //tradeQueue.Add(CreateTrade(offer, matchedQuantity, matchedPrice, bid.orderNumber, executionTime));
                             trades.Add(CreateTrade(bid, matchedQuantity, matchedPrice, offer.orderNumber, executionTime));
                             trades.Add(CreateTrade(offer, matchedQuantity, matchedPrice, bid.orderNumber, executionTime));
                         }
@@ -216,6 +262,12 @@ namespace OrderMatchingLibrary
             return trades;
         }
 
+        /*
+         * Get the sorted list of resting offer prices.
+         * 
+         * Implemented by Ryan Brown
+         * Business Logic determined by Chris Freeman and Max Gillman
+         */
         public Stack<decimal> GetOfferPrices(BuySell bidBuySell, Dictionary<decimal, List<Order>> offerQueue)
         {
             List<decimal> keys = new List<decimal>(offerQueue.Keys);
@@ -228,6 +280,12 @@ namespace OrderMatchingLibrary
             return new Stack<decimal>(keys);
         }
 
+        /*
+         * Add unfilled order to the order dictionary
+         * 
+         * Implemented by Ryan Brown
+         * Business Logic determined by Chris Freeman and Max Gillman
+         */
         public void AddOrder(Order order)
         {
             Dictionary<decimal, List<Order>> bidQueue = GetBidQueue(order.buySell);
@@ -244,6 +302,12 @@ namespace OrderMatchingLibrary
             }
         }
 
+        /*
+         * Create a trade from a matched order
+         * 
+         * Implemented by Ryan Brown
+         * Business Logic determined by Chris Freeman and Max Gillman
+         */
         public Trade CreateTrade(Order order, Int64 matchedQuantity, decimal matchedPrice, Int64 oppositeOrderId, DateTime executionTime)
         {
             Trade trade = new Trade();
@@ -262,11 +326,23 @@ namespace OrderMatchingLibrary
             return trade;
         }
 
+        /*
+         * Get the bid queue based on the buy sell indicator of the bid
+         * 
+         * Implemented by Ryan Brown
+         * Business Logic determined by Chris Freeman and Max Gillman
+         */
         private Dictionary<decimal, List<Order>> GetBidQueue(BuySell buySell)
         {
             return buySell == BuySell.Buy ? buyQueue : sellQueue;
         }
 
+        /*
+         * Get the offer queue based on the buy sell indicator of the bid
+         * 
+         * Implemented by Ryan Brown
+         * Business Logic determined by Chris Freeman and Max Gillman
+         */
         private Dictionary<decimal, List<Order>> GetOfferQueue(BuySell buySell)
         {
             return buySell == BuySell.Buy ? sellQueue : buyQueue;

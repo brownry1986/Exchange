@@ -6,5 +6,10 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+    /*
+     * Enumeration for holding possible Trading Modes
+     * 
+     * Implemented by Ryan Brown
+     */
     public enum TradingMode { Active, Passive, Startup }
 }

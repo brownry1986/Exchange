@@ -15,7 +15,11 @@ using System.Collections.Concurrent;
 
 namespace OrderMatchingLibrary
 {
-
+    /*
+     * Class to initialize the order books and matching engines for each product and facilitate submitting orders and retreiving information
+     * 
+     * Implemented by Ryan Brown
+     */
     public class OrderMatchingEngine
     {
 
@@ -42,6 +46,16 @@ namespace OrderMatchingLibrary
             // Load traders account information from the agent back into memory
         }
 
+        /*
+         * Start method loads the account information, initializes a matching thread and order book for each product.
+         * An order queue is created for each product and passed into the matching thread.
+         * 
+         * Initialize a thread to listen for matched trades coming back from the matching engine.
+         * 
+         * Initialize a thread to listen for requests.
+         * 
+         * Implemented by Ryan Brown
+         */
         public void Start()
         {
             LoadAccountInformation();
@@ -74,15 +88,11 @@ namespace OrderMatchingLibrary
             listenerThread.Start();
         }
 
-        public class MessageListener
-        {
-            public void Start()
-            {
-                AsyncCallback callBack = new AsyncCallback(ProcessMessage);
-                Messenger.Listen(callBack);
-            }
-        }
-
+        /*
+         * Stop method sets the running flag of the application to false and interrupts all running threads to allow for a clean shutdown
+         * 
+         * Implemented by Ryan Brown
+         */
         public void Stop()
         {
             running = false;
@@ -96,6 +106,25 @@ namespace OrderMatchingLibrary
             tradeLoadThread.Interrupt();
         }
 
+        /*
+         * Message Listener to listen for and process messages
+         * 
+         * Implemented by Ryan Brown
+         */
+        public class MessageListener
+        {
+            public void Start()
+            {
+                AsyncCallback callBack = new AsyncCallback(ProcessMessage);
+                Messenger.Listen(callBack);
+            }
+        }
+
+        /*
+         * Given a message, determine and execute the appropriate action
+         * 
+         * Implemented by Ryan Brown
+         */
         protected static Message ProcessAction(Message message)
         {
             Message response = new Message(MessageType.Failure, 0);
@@ -122,6 +151,11 @@ namespace OrderMatchingLibrary
             return new Message(MessageType.Failure, 0);
         }
 
+        /*
+         * Asyncronously process a message by receiving the message, processing the message and send back the response
+         * 
+         * Implemented by Ryan Brown
+         */
         protected static void ProcessMessage(IAsyncResult ar)
         {
             AsyncResult result = (AsyncResult)ar;
@@ -134,6 +168,11 @@ namespace OrderMatchingLibrary
             socket.Close();
         }
 
+        /*
+         * Sumbit Order Action validates an order and adds it to the order book in addition to sending it to the matching engine
+         * 
+         * Implemented by Ryan Brown
+         */
         protected class SubmitOrderAction : IAction
         {
             public Message Execute(Message message)
@@ -157,6 +196,11 @@ namespace OrderMatchingLibrary
                 return new Message(MessageType.Failure, order);
             }
 
+            /*
+             * Order validation logic
+             * 
+             * Implemented by Ryan Brown
+             */
             protected Boolean ValidateOrder(Order order)
             {
                 if (order.quantity <= 0)
@@ -196,18 +240,33 @@ namespace OrderMatchingLibrary
                 return ValidateOrderAgainstAccount(order);
             }
 
+            /*
+             * Validates order against account information
+             * 
+             * Implemented by Ryan Brown
+             */
             protected Boolean ValidateOrderAgainstAccount(Order order)
             {
                 // Validate the order against the trader's account information
                 return true;
             }
 
+            /*
+             * Updates account information based on submitted order
+             * 
+             * Implemented by Ryan Brown
+             */
             protected void UpdateAccountInformation(Order order)
             {
                 // Update the trader's account information based on the submitted order
             }
         }
 
+        /*
+         * Retrieves orders for a given product and trader
+         * 
+         * Implemented by Ryan Brown
+         */
         protected class RetrieveOrdersAction : IAction
         {
             public Message Execute(Message message)
@@ -224,6 +283,11 @@ namespace OrderMatchingLibrary
 
         }
 
+        /*
+         * Retrieves trades for a given product and trader
+         * 
+         * Implemented by Ryan Brown
+         */
         protected class RetrieveTradesAction : IAction
         {
             public Message Execute(Message message)
@@ -239,6 +303,11 @@ namespace OrderMatchingLibrary
             }
         }
 
+        /*
+         * Retrieves all orders for a given product (for administration purposes only)
+         * 
+         * Implemented by Ryan Brown
+         */
         protected class AdminRetrieveOrdersAction : IAction
         {
             public Message Execute(Message message)
@@ -256,6 +325,11 @@ namespace OrderMatchingLibrary
 
         }
 
+        /*
+         * Retrieves all trades for a given product with trade id greater than the trade id passed in (for administration purposes only)
+         * 
+         * Implemented by Ryan Brown
+         */
         protected class AdminRetrieveTradesAction : IAction
         {
             public Message Execute(Message message)
@@ -271,6 +345,11 @@ namespace OrderMatchingLibrary
             }
         }
 
+        /*
+         * Retrieves historical trades for a given product based on the number of trades requested (for administration purposes only)
+         * 
+         * Implemented by Ryan Brown
+         */
         protected class AdminRetrieveHistoricalTradesAction : IAction
         {
             public Message Execute(Message message)
@@ -286,6 +365,11 @@ namespace OrderMatchingLibrary
             }
         }
 
+        /*
+         * Retrieves bid/ask price for a specified product
+         * 
+         * Implemented by Ryan Brown
+         */
         protected class RetrieveBidAskAction : IAction
         {
             public Message Execute(Message message)
@@ -303,6 +387,12 @@ namespace OrderMatchingLibrary
 
         }
 
+        /*
+         * Switch the trading mode and return the new trading mode (for administration purposes only)
+         * 
+         * Implemented by Ryan Brown
+         * Business Logic determined by Chris Freeman
+         */
         protected class AdminSwitchTradingModeAction : IAction
         {
             public Message Execute(Message message)
@@ -329,6 +419,12 @@ namespace OrderMatchingLibrary
             }
         }
 
+        /*
+         * Thread to listen for matched threads coming back from the matching engine, 
+         * update the account information based on executed trades and add the matched trade to the order book
+         * 
+         * Implemented by Ryan Brown
+         */
         public class TradeLoader
         {
             public void Start()
